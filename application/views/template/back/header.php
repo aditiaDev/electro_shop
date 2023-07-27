@@ -24,6 +24,22 @@
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/template/back/assets/css/ace-skins.min.css" />
 		<link rel="stylesheet" href="<?php echo base_url(); ?>assets/template/back/assets/css/ace-rtl.min.css" />
 
+		<link rel="stylesheet" href="<?php echo base_url('/assets/toastr/toastr.min.css'); ?>">
+        <link rel="stylesheet" href="<?php echo base_url('/assets/css/loader.css'); ?>">
+
+		<style>
+			.mt-3 {
+				margin-top: 0.75rem;
+			}
+
+			.mt-5 {
+				margin-top: 1.25rem;
+			}
+			
+			.rounded-full {
+				border-radius: 9999px!important;
+			}
+		</style>
 
 		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/ace-extra.min.js"></script>
 
@@ -31,6 +47,9 @@
 	</head>
 
 	<body class="no-skin">
+		<div class="before-loader" id="LOADER" style="display: none;">
+        	<div class="loader5" ></div>
+     	</div>
 		<div id="navbar" class="navbar navbar-default    navbar-collapse       h-navbar ace-save-state">
 			<div class="navbar-container ace-save-state" id="navbar-container">
 				<div class="navbar-header pull-left">

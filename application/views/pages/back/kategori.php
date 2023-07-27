@@ -6,7 +6,7 @@
         <div class="col-md-8">
           <div class="widget-box">
             <div class="widget-header">
-              <h4 class="widget-title">Data User</h4>
+              <h4 class="widget-title">Data Kategori Barang</h4>
 
               <div class="widget-toolbar">
                 <a href="#" data-action="collapse">
@@ -24,12 +24,9 @@
                 <table id="tb_data" class="table table-bordered table-hover">
                   <thead>
                     <tr>
-                      <th>ID User</th>
-                      <th>Nama Pengguna</th>
-                      <th>Username</th>
-                      <th>Password</th>
-                      <th>Level</th>
-                      <th width="16%">Action</th>
+                      <th>ID Kategori</th>
+                      <th>Nama Kategori</th>
+                      <th width="20%">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -59,31 +56,12 @@
               <div class="widget-main">
                 <form id="FRM_DATA" method="post">
                   <div>
-                    <label>Nama Pengguna</label>
-                    <input type="text" name="nm_pengguna" class="form-control rounded-full" >
-                  </div>
-                  <div class="mt-3">
                     <label>
-                        Username
+                        Nama Kategori
                     </label>
-                    <input type="text" name="username" class="form-control rounded-full" />
+                    <input type="text" name="nm_kategori" class="form-control rounded-full" />
                   </div>
-                  <div class="mt-3">
-                    <label>
-                        Password
-                    </label>
-                    <input type="password" name="password" class="form-control rounded-full" />
-                  </div>
-                  <div class="mt-3">
-                    <label>
-                        Level
-                    </label>
-                    <select name="level" class="form-control rounded-full" style="height: 40px;padding-left: 10px;">
-                      <option value="PELANGGAN">PELANGGAN</option>
-                      <option value="KASIR">KASIR</option>
-                      <option value="PEMILIK">PEMILIK</option>
-                    </select>
-                  </div>
+                  
                   <div class="mt-5 text-right">
                     <button class="btn bg-secondary rounded-full" id="BTN_BATAL">Batal</button>
                     <button class="btn btn-primary rounded-full" id="BTN_SAVE">Simpan</button>
@@ -111,9 +89,9 @@ var id_data;
         event.preventDefault();
         var formData = $("#FRM_DATA").serialize();
         if(save_method == 'save') {
-            urlPost = "<?php echo site_url('user/saveData') ?>";
+            urlPost = "<?php echo site_url('kategori/saveData') ?>";
         }else{
-            urlPost = "<?php echo site_url('user/updateData') ?>";
+            urlPost = "<?php echo site_url('kategori/updateData') ?>";
             formData+="&id_user="+id_data
         }
 
@@ -137,19 +115,16 @@ var id_data;
         "autoWidth": false,
         "responsive": true,
         "ajax": {
-            "url": "<?php echo site_url('user/getAllData') ?>",
+            "url": "<?php echo site_url('kategori/getAllData') ?>",
             "type": "POST",
         },
         "columns": [
-            { "data": "id_user", className: "text-center" },
-            { "data": "nm_pengguna"},
-            { "data": "username"},
-            { "data": "password"},
-            { "data": "level"},
+            { "data": "id_kategori", className: "text-center" },
+            { "data": "nm_kategori"},
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
-                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_user+"\");'>Hapus </button>"
+                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_kategori+"\");'>Hapus </button>"
               },
               className: "text-center"
             },
@@ -189,19 +164,16 @@ var id_data;
     function editData(data, index){
       console.log(data)
       save_method = "edit"
-      id_data = data.id_user;
+      id_data = data.id_kategori;
       $("#judul_entry").text('Edit Data')
-      $("[name='nm_pengguna']").val(data.nm_pengguna)
-      $("[name='username']").val(data.username)
-      $("[name='password']").val(data.password)
-      $("[name='level']").val(data.level)
+      $("[name='nm_kategori']").val(data.nm_kategori)
     }
 
     function deleteData(id){
       if(!confirm('Delete this data?')) return
 
-      urlPost = "<?php echo site_url('user/deleteData') ?>";
-      formData = "id_user="+id
+      urlPost = "<?php echo site_url('kategori/deleteData') ?>";
+      formData = "id_kategori="+id
       ACTION(urlPost, formData)
     }
 </script>

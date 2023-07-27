@@ -20,9 +20,7 @@ class User extends CI_Controller {
 	}
 
   public function getAllData(){
-    $this->db->from('tb_user');
-    $this->db->order_by('nm_pengguna', 'asc');
-    $data['data'] = $this->db->get()->result();
+    $data['data'] = $this->db->query("SELECT * FROM tb_user WHERE id_user not in ('SU') ")->result();
     echo json_encode($data);
   }
 
@@ -75,7 +73,6 @@ class User extends CI_Controller {
               "username" => $this->input->post('username'),
               "password" => $this->input->post('password'),
               "level" => $this->input->post('level'),
-              "status_password" => "BELUM RESET"
             );
     $this->db->insert('tb_user', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
@@ -138,7 +135,6 @@ class User extends CI_Controller {
     $data = array(
       "nm_pengguna" => $this->input->post('nm_pengguna_reset'),
       "password" => $this->input->post('password_reset'),
-      "status_password" => "SUDAH RESET",
     );
     $this->db->where('id_user', $this->input->post('id_user'));
     $this->db->update('tb_user', $data);

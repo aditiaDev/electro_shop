@@ -34,7 +34,7 @@
 	</div><!-- /.sidebar-shortcuts -->
 
 	<ul class="nav nav-list">
-		<li class="active open hover">
+		<li class="<?= ($this->uri->segment(1) == 'home') ? 'active open' : '' ?> hover">
 			<a href="<?php echo base_url("home")?>">
 				<i class="menu-icon fa fa-home"></i>
 				<span class="menu-text"> Dashboard </span>
@@ -43,7 +43,7 @@
 			<b class="arrow"></b>
 		</li>
 
-		<li class="hover">
+		<li class="<?= ($this->uri->segment(1) == 'master') ? 'active open' : '' ?> hover">
 			<a href="#" class="dropdown-toggle">
 				<i class="menu-icon fa fa-desktop"></i>
 				<span class="menu-text">
@@ -58,9 +58,25 @@
 			<ul class="submenu">
 
 				<li class="hover">
-					<a href="<?php echo base_url("user")?>">
+					<a href="<?php echo base_url("master/user")?>">
 						<i class="menu-icon fa fa-caret-right"></i>
 						User
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="hover">
+					<a href="<?php echo base_url("master/kategori")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Kategori Barang
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+				<li class="hover">
+					<a href="<?php echo base_url("master/barang")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Barang
 					</a>
 
 					<b class="arrow"></b>

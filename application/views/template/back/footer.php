@@ -53,6 +53,9 @@
 		<!-- ace scripts -->
 		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/ace-elements.min.js"></script>
 		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/ace.min.js"></script>
+		<script src="<?php echo base_url('/assets/toastr/toastr.min.js'); ?>"></script>
+		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery.dataTables.min.js"></script>
+		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery.dataTables.bootstrap.min.js"></script>
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
