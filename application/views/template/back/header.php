@@ -39,6 +39,15 @@
 			.rounded-full {
 				border-radius: 9999px!important;
 			}
+
+      td.dt-control {
+        background: url('<?php echo base_url(); ?>assets/details_open.png') no-repeat center center;
+        cursor: pointer
+      }
+
+      tr.shown td.dt-control {
+        background: url('<?php echo base_url(); ?>assets/details_close.png') no-repeat center center;
+      }
 		</style>
 
 		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/ace-extra.min.js"></script>

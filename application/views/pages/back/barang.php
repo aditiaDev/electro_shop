@@ -25,13 +25,17 @@
                 <table id="tb_data" class="table table-bordered table-hover">
                   <thead>
                     <tr>
+                      <th>#</th>
                       <th>Kategori</th>
                       <th>ID Barang</th>
+                      <th>Nama Barang</th>
+                      <th>Merk</th>
                       <th>Harga Satuan</th>
                       <th>Unit</th>
-                      <th>Foto</th>
-                      <th>Keterangan</th>
-                      <th width="15%">Action</th>
+                      <th>Stock</th>
+                      <!-- <th>Foto</th> -->
+                      <th width="20%">Keterangan</th>
+                      <th width="9%">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -58,11 +62,11 @@
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>Kategori</label>
-                    <select name="id_kategori" id="" class="form-control" onchange="generate_kode()">
+                    <select name="id_kategori" id="" class="form-control">
                       <option value="" disabled selected> - Pilih - </option>
                       <?php
                         foreach($kategori as $kat){
-                          echo "<option value='".$kat->id_kategori."'>".$kat->deskripsi."</option>";
+                          echo "<option value='".$kat->id_kategori."'>".$kat->nm_kategori."</option>";
                         }
                       ?>
                     </select>
@@ -73,14 +77,14 @@
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Kode Barang</label>
-                    <input type="text" class="form-control" name="id_barang" readonly>
+                    <label>Nama Barang</label>
+                    <input type="text" class="form-control" name="nm_barang" >
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Deskrispsi</label>
-                    <textarea name="nama_barang"  class="form-control" required></textarea>
+                    <label>Harga</label>
+                    <input name="harga"  class="form-control" onkeypress="return onlyNumberKey(event)" required>
                   </div>
                 </div>
               </div>
@@ -93,32 +97,39 @@
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Stok Tersedia</label>
-                    <input type="text" class="form-control" name="stock_tersedia" onkeypress="return onlyNumberKey(event)" required>
+                    <label>Unit Pengukuran</label>
+                    <select name="unit_pengukuran" id="" class="form-control">
+                      <option value="" disabled selected> - Pilih - </option>
+                      <?php
+                        foreach($unit as $uom){
+                          echo "<option value='".$uom->unit_pengukuran."'>".$uom->unit_pengukuran." - ".$uom->deskripsi."</option>";
+                        }
+                      ?>
+                    </select>
                   </div>
                 </div>
               </div>
               <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label>Min Stok</label>
-                    <input type="text" class="form-control" name="min_stock" placeholder="Minimum Stok" onkeypress="return onlyNumberKey(event)">
+                    <label>Merk</label>
+                    <input type="text" class="form-control" name="merk" >
                   </div>
                 </div>
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label>Harga Beli</label>
-                    <input type="test" class="form-control" name="harga_beli" onkeypress="return onlyNumberKey(event)" required>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label id="lbl_foto">Foto</label>
                     <div class="custom-file">
                       <input type="file"  name="foto" accept="image/png, image/gif, image/jpeg">
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="form-group">
+                    <label id="lbl_foto">Keterangan</label>
+                    <textarea name="ket_barang" rows="5" class="form-control"></textarea>
                   </div>
                 </div>
               </div>
@@ -169,7 +180,7 @@
         }
         // console.log(formData)
         ACTION(urlPost, formData)
-        $("#modal_add").modal('hide')
+        // $("#modal_add").modal('hide')
       })
 
     })
@@ -177,16 +188,15 @@
     function REFRESH_DATA(){
       $('#tb_data').DataTable().destroy();
       tb_data =  $("#tb_data").DataTable({
-          "order": [[ 1, "desc" ]],
+          "order": [[ 1, "asc" ], [ 2, "asc" ]],
           "pageLength": 25,
           "autoWidth": false,
           "responsive": true,
           "ajax": {
-              "url": "<?php echo site_url('barang/getAllDataByUser') ?>",
+              "url": "<?php echo site_url('barang/getAllData') ?>",
               "type": "POST",
               "data": {
                 "id_kategori" : $("[name='src_kategori']").val(),
-                "id_laborat" : $("[name='src_laborat']").val()
               }
           },
           "createdRow": function( row, data, dataIndex){
@@ -204,19 +214,19 @@
                 "data":           null,
                 "defaultContent": ''
               },
+              { "data": "nm_kategori" },
               { "data": "id_barang" },
-              { "data": "nama_barang"},
-              { "data": "id_kategori"},
-              { "data": "id_laborat"},
+              { "data": "nm_barang"},
+              { "data": "merk"},
+              { "data": "harga"},
+              { "data": "unit_pengukuran"},
               { "data": "stock"},
-              { "data": "stock_tersedia"},
-              // { "data": "harga_beli"},
-              { "data": "min_stock"},
+              { "data": "ket_barang"},
               // { "data": "foto"},
               { "data": null, 
                 "render" : function(data){
-                  return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'><i class='bi bi-pencil-square'></i> </button> "+
-                    "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_barang+"\");'><i class='bi bi-trash'></i> </button>"
+                  return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'><i class='fa fa-pencil-square-o'></i> </button> "+
+                    "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_barang+"\");'><i class='fa fa-trash'></i> </button>"
                 },
                 className: "text-center"
               },
@@ -227,8 +237,9 @@
 
     function format ( d ) {
       // `d` is the original data object for the row
-      if(d.foto){
-        img = "<a target='_blank' href='<?php echo base_url() ?>assets/images/barang/"+d.foto+"'><img  style='max-width: 120px;' class='img-fluid' src='<?php echo base_url() ?>assets/images/barang/"+d.foto+"' ></a>";
+      console.log(d)
+      if(d.foto_barang){
+        img = "<a target='_blank' href='<?php echo base_url() ?>assets/images/barang/"+d.foto_barang+"'><img  style='max-width: 120px;' class='img-fluid' src='<?php echo base_url() ?>assets/images/barang/"+d.foto_barang+"' ></a>";
       }else{
         img = "No Image"
       }
@@ -239,11 +250,11 @@
           '</tr>'+
           '<tr>'+
               '<td>Harga:</td>'+
-              '<td>'+d.harga_beli+'</td>'+
+              '<td>'+d.harga+'</td>'+
           '</tr>'+
           '<tr>'+
-              '<td>Min Stock:</td>'+
-              '<td>'+d.min_stock+'</td>'+
+              '<td>Stock:</td>'+
+              '<td>'+d.stock+'</td>'+
           '</tr>'+
       '</table>';
     }
@@ -272,13 +283,13 @@
       $("#lbl_foto").text("Ganti Foto")
       $("#modal_add .modal-title").text('Edit Data')
       $("[name='id_barang']").val(data.id_barang)
-      $("[name='nama_barang']").val(data.nama_barang)
+      $("[name='nm_barang']").val(data.nm_barang)
+      $("[name='harga']").val(data.harga.replaceAll(".",""))
       $("[name='stock']").val(data.stock)
-      $("[name='stock_tersedia']").val(data.stock_tersedia)
-      $("[name='harga_beli']").val(data.harga_beli.replaceAll(".",""))
-      $("[name='min_stock']").val(data.min_stock)
       $("[name='id_kategori']").val(data.id_kategori)
-      $("[name='id_laborat']").val(data.id_laborat)
+      $("[name='ket_barang']").val(data.ket_barang)
+      $("[name='merk']").val(data.merk)
+      $("[name='unit_pengukuran']").val(data.unit_pengukuran)
 
       $("#modal_add").modal('show')
     }
@@ -303,6 +314,7 @@
           if (data.status == "success") {
             toastr.info(data.message)
             REFRESH_DATA()
+            $("#modal_add").modal('hide')
 
           }else{
             toastr.error(data.message)
@@ -340,20 +352,4 @@
       })
     }
 
-    function generate_kode(){
-      if($("[name='id_kategori']").val() && $("[name='id_laborat']").val()){
-        $.ajax({
-          url: "<?php echo site_url('barang/generate_kode') ?>",
-          type: "POST",
-          data: {
-            id_kategori : $("[name='id_kategori']").val(),
-            id_laborat : $("[name='id_laborat']").val()
-          },
-          success: function(data){
-            $("[name='id_barang']").val(data)
-          }
-        })
-      }
-      
-    }
   </script>

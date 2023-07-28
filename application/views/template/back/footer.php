@@ -59,6 +59,16 @@
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
+
+      function onlyNumberKey(evt) {
+          
+          // Only ASCII character in that range allowed
+          var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+          if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57) && ASCIICode!=46)
+              return false;
+          return true;
+      }
+
 			// jQuery(function($) {
 			//  var $sidebar = $('.sidebar').eq(0);
 			//  if( !$sidebar.hasClass('h-sidebar') ) return;

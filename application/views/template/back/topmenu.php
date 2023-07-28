@@ -65,6 +65,14 @@
 
 					<b class="arrow"></b>
 				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("master/pelanggan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Pelanggan
+					</a>
+
+					<b class="arrow"></b>
+				</li>
 				<li class="hover">
 					<a href="<?php echo base_url("master/kategori")?>">
 						<i class="menu-icon fa fa-caret-right"></i>
