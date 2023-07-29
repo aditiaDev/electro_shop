@@ -62,8 +62,20 @@
               <div class="widget-main">
                 <form id="FRM_DATA" method="post">
                   <div>
-                    <label>Nama Pengguna</label>
-                    <input type="text" name="nm_pengguna" class="form-control rounded-full" >
+                    <label>Nama Pelanggan</label>
+                    <input type="text" name="nm_pelanggan" class="form-control rounded-full" >
+                  </div>
+                  <div class="mt-3">
+                    <label>
+                        No Handphone
+                    </label>
+                    <input type="text" name="no_pelanggan" class="form-control rounded-full" />
+                  </div>
+                  <div class="mt-3">
+                    <label>
+                        Alamat
+                    </label>
+                    <textarea name="alamat" class="form-control" rows="3"></textarea>
                   </div>
                   <div class="mt-3">
                     <label>
@@ -76,16 +88,6 @@
                         Password
                     </label>
                     <input type="password" name="password" class="form-control rounded-full" />
-                  </div>
-                  <div class="mt-3">
-                    <label>
-                        Level
-                    </label>
-                    <select name="level" class="form-control rounded-full" style="height: 40px;padding-left: 10px;">
-                      <option value="PELANGGAN">PELANGGAN</option>
-                      <option value="KASIR">KASIR</option>
-                      <option value="PEMILIK">PEMILIK</option>
-                    </select>
                   </div>
                   <div class="mt-5 text-right">
                     <button class="btn bg-secondary rounded-full" id="BTN_BATAL">Batal</button>
@@ -197,10 +199,11 @@ var id_data;
       save_method = "edit"
       id_data = data.id_user;
       $("#judul_entry").text('Edit Data')
-      $("[name='nm_pengguna']").val(data.nm_pengguna)
+      $("[name='nm_pelanggan']").val(data.nm_pelanggan)
+      $("[name='no_pelanggan']").val(data.no_pelanggan)
       $("[name='username']").val(data.username)
       $("[name='password']").val(data.password)
-      $("[name='level']").val(data.level)
+      $("[name='alamat']").val(data.alamat)
     }
 
     function deleteData(id){
