@@ -159,4 +159,37 @@ class Barang extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function getByKategori(){
+    $id_kategori = $this->input->post('id_kategori');
+    if($id_kategori == "ALL"){
+      $query = "SELECT * FROM tb_barang ORDER BY nm_barang";
+    }else{
+      $query = "SELECT * FROM tb_barang WHERE id_kategori = '".$id_kategori."' ORDER BY nm_barang";
+    }
+
+    $html="";
+    $sql = $this->db->query($query)->result_array();
+    foreach($sql as $row){
+      $html .= '
+      <li>
+        <a href="javascript:;" data-rel="colorbox" onclick="addItem(\''.$row['id_barang'].'\')">
+          <img width="120" height="120" alt="120x120" src="'.base_url().'assets/images/barang/'.$row['foto_barang'].'" />
+          <div class="text">
+            <div class="inner">'.$row['nm_barang'].'</div>
+          </div>
+        </a>
+      </li>
+      ';
+    }
+
+    echo $html;
+  }
+
+  public function getBarangById(){
+    $data['data'] = $this->db->query("
+    SELECT * FROM tb_barang WHERE id_barang = '".$this->input->post('id_barang')."'
+    ")->result();
+    echo json_encode($data);
+  }
+
 }

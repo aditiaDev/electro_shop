@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 28 Jul 2023 pada 17.11
+-- Waktu pembuatan: 30 Jul 2023 pada 16.02
 -- Versi server: 10.4.10-MariaDB
 -- Versi PHP: 7.3.12
 
@@ -45,8 +45,10 @@ CREATE TABLE `tb_barang` (
 --
 
 INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
-('B2300001', 'K00001', 'Mouse', 50000, 'PCS', 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
-('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\" dengan Radeon FreeSync™ (Diagonal 21.5\")', 8000000, 'EA', 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas');
+('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
+('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
+('B2300003', 'K00001', 'Mousepad', 15000, 'EA', 20, '-', '1690690381510.png', 'Mousepad Murah'),
+('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 10, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
 
 -- --------------------------------------------------------
 
@@ -117,7 +119,10 @@ CREATE TABLE `tb_kategori_barang` (
 INSERT INTO `tb_kategori_barang` (`id_kategori`, `nm_kategori`) VALUES
 ('K00001', 'Aksesoris'),
 ('K00002', 'Monitor'),
-('K00003', 'Chasing CPU');
+('K00003', 'Chasing CPU'),
+('K00004', 'Mouse'),
+('K00005', 'Lain-lain'),
+('K00006', 'Keyboard');
 
 -- --------------------------------------------------------
 
@@ -139,6 +144,7 @@ CREATE TABLE `tb_pelanggan` (
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `id_user`, `no_pelanggan`, `nm_pelanggan`, `alamat`, `tgl_register`) VALUES
+('GUEST', 'GUEST', NULL, 'Non Member', 'Non Member', '2020-01-01'),
 ('P2300001', 'U2300003', '08567543557', 'Pelanggan Pertama Kita', 'Kudus Desa di Kudus', '2020-11-18');
 
 -- --------------------------------------------------------

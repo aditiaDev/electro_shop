@@ -58,3 +58,5 @@ $route['master/user'] = 'user';
 $route['master/kategori'] = 'kategori';
 $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
+
+$route['transaksi/penjualan'] = 'penjualan';
