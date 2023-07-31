@@ -31,20 +31,31 @@
 
 			<div class="row">
         <div class="col-md-5" style="padding-left: 1px;padding-right: 1px;">
-          <table id="tb_item" class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>Item</th>
-                <th style="width:80px;">Qty</th>
-                <th>Harga</th>
-                <th>Sub Total</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div style="overflow-y: auto;height:400px;">
+            <table id="tb_item" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th style="width: 320px;">Item</th>
+                  <th style="width:80px;">Qty</th>
+                  <th>Harga</th>
+                  <th>Sub Total</th>
+                </tr>
+              </thead>
+              <tbody>
 
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td style="width: 320px;">Total</td>
+                  <td style="text-align:right;padding-right: 25px;" id="total_text">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div> 
         <div class="col-md-2" style="overflow-y: auto;height:550px;padding-left: 1px;padding-right: 1px;">
         <button type="button" class="btn-danger block" onclick="actKategori('ALL')">ALL</button>
@@ -107,16 +118,63 @@
         $.each(data, function(index,array){
           //console.log(index);
           noRow = noRow+1;
-          t_data += '<tr>'+
-                      '<td>'+noRow+'</td>'+
-                      '<td>'+array['id_barang']+'<button type="button" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
-                      '<td><input type="text" name="qty" class="form-control" value="1"></td>'+
-                      '<td>'+array['harga']+'</td>'+
-                      '<td>'+array['harga']+'</td>'+
+          t_data += '<tr id="row_'+noRow+'">'+
+                      '<td>'+array['id_barang']+'<button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
+                      '<td><input type="text" name="qty[]" id="qty_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control qty" value="1"></td>'+
+                      '<td style="text-align:right;" id="harga_'+noRow+'" class="harga">'+formatRupiah(array['harga'], '')+'</td>'+
+                      '<td style="text-align:right;" id="subTotal_'+noRow+'" class="subTotal">'+formatRupiah(array['harga'], '')+'</td>'+
                     '</tr>'
         });
         $("#tb_item tbody").append(t_data);
+        total()
       }
     })
+  }
+
+  function subTotal(id){
+    // console.log(id)
+    let qty = $("#qty_"+id).val().split('.').join('');
+    let harga = $("#harga_"+id).text().split('.').join('');
+
+    let subTotal = parseFloat(qty) * parseFloat(harga)
+    $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
+
+    total()
+  }
+
+  function total(){
+    var tot=0; var subTotal=0;
+    var jml_part = $("[name='qty[]']").length - 1;
+    for (var j = 0; j <= jml_part; j++) {
+        subTotal = $(".subTotal").eq(j).text().split('.').join('');
+        tot += parseFloat(subTotal);
+
+    }
+
+    $("#total_text").text(formatRupiah(tot.toString(), ''));
+
+  }
+
+  function deleteRow(id){
+    $("#row_"+id).remove();
+    total()
+  }
+
+  /* Fungsi formatRupiah */
+  function formatRupiah(angka, prefix){
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+    split   		= number_string.split(','),
+    sisa     		= split[0].length % 3,
+    rupiah     		= split[0].substr(0, sisa),
+    ribuan     		= split[0].substr(sisa).match(/\d{3}/gi);
+
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if(ribuan){
+      separator = sisa ? '.' : '';
+      rupiah += separator + ribuan.join('.');
+    }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? prefix + rupiah : '');
   }
 </script>
