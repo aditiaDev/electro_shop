@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 30 Jul 2023 pada 16.02
--- Versi server: 10.4.10-MariaDB
--- Versi PHP: 7.3.12
+-- Generation Time: Aug 01, 2023 at 09:03 AM
+-- Server version: 10.4.13-MariaDB
+-- PHP Version: 7.3.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -25,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_barang`
+-- Table structure for table `tb_barang`
 --
 
 CREATE TABLE `tb_barang` (
@@ -41,7 +40,7 @@ CREATE TABLE `tb_barang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `tb_barang`
+-- Dumping data for table `tb_barang`
 --
 
 INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
@@ -53,7 +52,7 @@ INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_barang_keluar`
+-- Table structure for table `tb_barang_keluar`
 --
 
 CREATE TABLE `tb_barang_keluar` (
@@ -71,7 +70,7 @@ CREATE TABLE `tb_barang_keluar` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_barang_masuk`
+-- Table structure for table `tb_barang_masuk`
 --
 
 CREATE TABLE `tb_barang_masuk` (
@@ -88,7 +87,7 @@ CREATE TABLE `tb_barang_masuk` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_dtl_penjualan`
+-- Table structure for table `tb_dtl_penjualan`
 --
 
 CREATE TABLE `tb_dtl_penjualan` (
@@ -104,7 +103,7 @@ CREATE TABLE `tb_dtl_penjualan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_kategori_barang`
+-- Table structure for table `tb_kategori_barang`
 --
 
 CREATE TABLE `tb_kategori_barang` (
@@ -113,7 +112,7 @@ CREATE TABLE `tb_kategori_barang` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `tb_kategori_barang`
+-- Dumping data for table `tb_kategori_barang`
 --
 
 INSERT INTO `tb_kategori_barang` (`id_kategori`, `nm_kategori`) VALUES
@@ -127,7 +126,7 @@ INSERT INTO `tb_kategori_barang` (`id_kategori`, `nm_kategori`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_pelanggan`
+-- Table structure for table `tb_pelanggan`
 --
 
 CREATE TABLE `tb_pelanggan` (
@@ -140,7 +139,7 @@ CREATE TABLE `tb_pelanggan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `tb_pelanggan`
+-- Dumping data for table `tb_pelanggan`
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `id_user`, `no_pelanggan`, `nm_pelanggan`, `alamat`, `tgl_register`) VALUES
@@ -150,7 +149,7 @@ INSERT INTO `tb_pelanggan` (`id_pelanggan`, `id_user`, `no_pelanggan`, `nm_pelan
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_pembayaran`
+-- Table structure for table `tb_pembayaran`
 --
 
 CREATE TABLE `tb_pembayaran` (
@@ -164,7 +163,7 @@ CREATE TABLE `tb_pembayaran` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_penjualan`
+-- Table structure for table `tb_penjualan`
 --
 
 CREATE TABLE `tb_penjualan` (
@@ -182,7 +181,27 @@ CREATE TABLE `tb_penjualan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_unit_pengukuran`
+-- Table structure for table `tb_temp_chart`
+--
+
+CREATE TABLE `tb_temp_chart` (
+  `id_barang` varchar(15) NOT NULL,
+  `id_user` varchar(15) NOT NULL,
+  `qty` float NOT NULL,
+  `harga` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tb_temp_chart`
+--
+
+INSERT INTO `tb_temp_chart` (`id_barang`, `id_user`, `qty`, `harga`) VALUES
+('1', '1', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_unit_pengukuran`
 --
 
 CREATE TABLE `tb_unit_pengukuran` (
@@ -191,7 +210,7 @@ CREATE TABLE `tb_unit_pengukuran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `tb_unit_pengukuran`
+-- Dumping data for table `tb_unit_pengukuran`
 --
 
 INSERT INTO `tb_unit_pengukuran` (`unit_pengukuran`, `deskripsi`) VALUES
@@ -204,7 +223,7 @@ INSERT INTO `tb_unit_pengukuran` (`unit_pengukuran`, `deskripsi`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `tb_user`
+-- Table structure for table `tb_user`
 --
 
 CREATE TABLE `tb_user` (
@@ -216,7 +235,7 @@ CREATE TABLE `tb_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data untuk tabel `tb_user`
+-- Dumping data for table `tb_user`
 --
 
 INSERT INTO `tb_user` (`id_user`, `nm_pengguna`, `username`, `password`, `level`) VALUES
@@ -231,61 +250,61 @@ INSERT INTO `tb_user` (`id_user`, `nm_pengguna`, `username`, `password`, `level`
 --
 
 --
--- Indeks untuk tabel `tb_barang`
+-- Indexes for table `tb_barang`
 --
 ALTER TABLE `tb_barang`
   ADD PRIMARY KEY (`id_barang`);
 
 --
--- Indeks untuk tabel `tb_barang_keluar`
+-- Indexes for table `tb_barang_keluar`
 --
 ALTER TABLE `tb_barang_keluar`
   ADD PRIMARY KEY (`id_barang_keluar`);
 
 --
--- Indeks untuk tabel `tb_barang_masuk`
+-- Indexes for table `tb_barang_masuk`
 --
 ALTER TABLE `tb_barang_masuk`
   ADD PRIMARY KEY (`id_barang_masuk`);
 
 --
--- Indeks untuk tabel `tb_dtl_penjualan`
+-- Indexes for table `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
   ADD PRIMARY KEY (`id_dtl_penjualan`);
 
 --
--- Indeks untuk tabel `tb_kategori_barang`
+-- Indexes for table `tb_kategori_barang`
 --
 ALTER TABLE `tb_kategori_barang`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
--- Indeks untuk tabel `tb_pelanggan`
+-- Indexes for table `tb_pelanggan`
 --
 ALTER TABLE `tb_pelanggan`
   ADD PRIMARY KEY (`id_pelanggan`);
 
 --
--- Indeks untuk tabel `tb_pembayaran`
+-- Indexes for table `tb_pembayaran`
 --
 ALTER TABLE `tb_pembayaran`
   ADD PRIMARY KEY (`id_pembayaran`);
 
 --
--- Indeks untuk tabel `tb_penjualan`
+-- Indexes for table `tb_penjualan`
 --
 ALTER TABLE `tb_penjualan`
   ADD PRIMARY KEY (`id_penjualan`);
 
 --
--- Indeks untuk tabel `tb_unit_pengukuran`
+-- Indexes for table `tb_unit_pengukuran`
 --
 ALTER TABLE `tb_unit_pengukuran`
   ADD PRIMARY KEY (`unit_pengukuran`);
 
 --
--- Indeks untuk tabel `tb_user`
+-- Indexes for table `tb_user`
 --
 ALTER TABLE `tb_user`
   ADD PRIMARY KEY (`id_user`);
