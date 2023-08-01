@@ -35,10 +35,11 @@
             <table id="tb_item" class="table table-bordered table-hover">
               <thead>
                 <tr>
-                  <th style="width: 320px;">Item</th>
+                  <th style="width: 270px;">Item</th>
                   <th style="width:80px;">Qty</th>
                   <th>Harga</th>
-                  <th>Sub Total</th>
+                  <th style="width:80px;">Diskon<br>Value</th>
+                  <th style="width:100px;">Sub Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -50,11 +51,47 @@
             <table class="table table-bordered">
               <tbody>
                 <tr>
-                  <td style="width: 320px;">Total</td>
-                  <td style="text-align:right;padding-right: 25px;" id="total_text">0</td>
+                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Total</td>
+                  <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="total_text">0</td>
+                </tr>
+                <tr>
+                  <td>Pelanggan</td>
+                  <td>
+                    <input type="text" class="form-control" name="id_pelanggan" style="float:left;width:70%;" placeholder="Kode Pelanggan">
+                    <button type="button" class="btn btn-sm btn-secondary" id="BTN_PELANGGAN" ><i class="fa fa-list"></i></button>
+                  </td>
+                  <td id="nm_pelanggan" style="font-size:15px;">Non Member</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>Diskon (%)</td>
+                  <td><input type="number" max="100" class="form-control" value="0"></td>
+                </tr>
+                <tr>
+                  <td  style="width: 220px;font-size: 20px;font-weight: bold;">Order Value</td>
+                  <td colspan="2" style="color:red;text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 25px;" id="order_text">0</td>
+                </tr>
+                <tr>
+                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Bayar</td>
+                  <td colspan="2"><input type="text" name="bayar"  class="form-control"></td>
+                </tr>
+                <tr>
+                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Kembali</td>
+                  <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="kembali_text">0</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+          <div>
+            <div class="col-md-4" style="padding: 0px;">
+              <button class="btn btn-warning btn-block"><i class="ace-icon fa fa-times bigger-160"></i> Cancel</button>
+            </div>
+            <div class="col-md-4" style="padding: 0px;">
+              <button class="btn btn-light btn-block"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
+            </div>
+            <div class="col-md-4" style="padding: 0px;">
+              <button class="btn btn-danger btn-block"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Pay</button>
+            </div>
           </div>
         </div> 
         <div class="col-md-2" style="overflow-y: auto;height:550px;padding-left: 1px;padding-right: 1px;">
@@ -81,6 +118,43 @@
       </div> 
     </div> 
   </div> 
+
+
+  <!-- Modal Pelanggan -->
+    <div class="modal fade" id="modal_pelanggan"  role="dialog"  aria-hidden="true">
+      <div class="modal-dialog" role="document" style="width:700px">
+        <!-- <form id="form_item"> -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Pilih Pelanggan</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <table class="table table-bordered table-hover table-striped" id="tb_select_pelanggan">
+                      <thead>
+                          <th>ID Pelanggan</th>
+                          <th>Nama</th>
+                      </thead>
+                      <tbody>
+                          <tr>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        <!-- </form> -->
+      </div>
+    </div>
+  <!-- Modal Pelanggan -->
+
 </div> 
 
 <script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery-2.1.4.min.js"></script>
@@ -102,6 +176,18 @@
   }
   var noRow=0
   function addItem(id_barang){
+
+    var ITEM_NO = $(".i_barang");
+
+    for (var i = 0; i <ITEM_NO.length; i++) {
+      if ($(".i_barang").eq(i).text() == id_barang) {
+        let jml = parseFloat( $("[name='qty[]']").eq(i).val() )
+        $("[name='qty[]']").eq(i).val(jml+1)
+        subTotal(i)
+        return
+      }
+    }
+
     $.ajax({
       url: "<?php echo site_url('barang/getBarangById') ?>",
       type: "POST",
@@ -117,13 +203,16 @@
         
         $.each(data, function(index,array){
           //console.log(index);
-          noRow = noRow+1;
+          
           t_data += '<tr id="row_'+noRow+'">'+
-                      '<td>'+array['id_barang']+'<button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
+                      '<td ><span class="i_barang">'+array['id_barang']+'</span><button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
                       '<td><input type="text" name="qty[]" id="qty_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control qty" value="1"></td>'+
                       '<td style="text-align:right;" id="harga_'+noRow+'" class="harga">'+formatRupiah(array['harga'], '')+'</td>'+
+                      '<td><input type="text" name="diskon[]" id="diskon_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control diskon" value="0"></td>'+
                       '<td style="text-align:right;" id="subTotal_'+noRow+'" class="subTotal">'+formatRupiah(array['harga'], '')+'</td>'+
                     '</tr>'
+
+                    noRow = noRow+1;
         });
         $("#tb_item tbody").append(t_data);
         total()
@@ -135,8 +224,9 @@
     // console.log(id)
     let qty = $("#qty_"+id).val().split('.').join('');
     let harga = $("#harga_"+id).text().split('.').join('');
+    let diskon = $("#diskon_"+id).val().split('.').join('');
 
-    let subTotal = parseFloat(qty) * parseFloat(harga)
+    let subTotal = ( parseFloat(qty) * parseFloat(harga) ) - parseFloat(diskon)
     $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
 
     total()
@@ -159,6 +249,40 @@
     $("#row_"+id).remove();
     total()
   }
+
+  $("#BTN_PELANGGAN").click(function(){
+    
+    table_find_pelanggan = $('#tb_select_pelanggan').DataTable( {
+          "order": [[ 1, "asc" ]],
+          "pageLength": 25,
+          "autoWidth": false,
+          "responsive": true,
+          "ajax": {
+              "url": "<?php echo site_url('pelanggan/getPelanggan') ?>",
+              "type": "POST",
+          },
+          "columns": [
+              { "data": "id_pelanggan" },{ "data": "nm_pelanggan" }
+          ]
+      });
+
+    $("#modal_pelanggan").modal('show');
+  });
+
+  $('body').on( 'dblclick', '#tb_select_pelanggan tbody tr', function (e) {
+      let Rowdata = table_find_pelanggan.row( this ).data();
+      let id_pelanggan = Rowdata.id_pelanggan;
+      let nm_pelanggan = Rowdata.nm_pelanggan;
+
+      $("[name='id_pelanggan']").val(id_pelanggan);
+      $("#nm_pelanggan").text(nm_pelanggan);
+
+      $('#tb_select_pelanggan').DataTable().destroy();
+      
+      $('#modal_pelanggan').modal('hide');
+
+      
+  });
 
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){
