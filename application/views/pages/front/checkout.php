@@ -50,8 +50,8 @@
               <select class="form-control select2" name="kota_asal" required></select>
             </div>
             <div class="form-group">
-              <label>Kota Asal</label>
-              <select class="form-control select2" id="kota_tujuan" required></select>
+              <label>Kota Tujuan</label>
+              <select class="form-control select2" name="kota_tujuan" required></select>
             </div>
             <div class="form-group">
               <label for="">Kurir</label>
@@ -139,7 +139,7 @@
 ?>
 <script src="<?php echo base_url(); ?>assets/template/front/js/jquery.min.js"></script>
 <script>
-
+  getKota()
   function deleteRow(id_barang){
     $.ajax({
 			url: "<?php echo base_url('front/deleteKeranjang') ?>",
@@ -150,8 +150,26 @@
         toastr.info(data.message)
 			}
 		});
-    total()
+    
     $("#row_"+id_barang).remove();
+    total()
+  }
+
+  function getKota(){
+    $.ajax({
+      url: "<?php echo base_url('ongkir/getKota') ?>",
+      type: "POST",
+      dataType: "JSON",
+      success: function(data){
+        // console.log(data['rajaongkir']['results'])
+        $.map(data.rajaongkir.results, function (item) {
+          console.log(item)
+          var isine = "<option>"+item.city_name+"</option>"
+          $("[name='kota_asal']").append(isine)
+          $("[name='kota_tujuan']").append(isine)
+        })
+      }
+    })
   }
 
   function subTotal(id){
