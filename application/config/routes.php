@@ -60,3 +60,4 @@ $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
 
 $route['transaksi/penjualan'] = 'penjualan';
+$route['checkout'] = 'front/checkout';

@@ -1851,7 +1851,7 @@ textarea.input {
 
 .order-details {
   position: relative;
-  padding: 0px 30px 30px;
+  /* padding: 0px 30px 30px; */
   border-right: 1px solid #E4E7ED;
   border-left: 1px solid #E4E7ED;
   border-bottom: 1px solid #E4E7ED;

@@ -103,7 +103,7 @@ class Pelanggan extends CI_Controller {
       "nm_pengguna" => $this->input->post('nm_pelanggan'),
       "username" => $this->input->post('username'),
       "password" => $this->input->post('password'),
-      "password" => "PELANGGAN",
+      "level" => "PELANGGAN",
     );
     $this->db->insert('tb_user', $dataUser);
     

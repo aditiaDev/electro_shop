@@ -131,7 +131,7 @@
 								"</div>"+
 							"</div>"+
 							"<div class='add-to-cart'>"+
-								"<button class='add-to-cart-btn'><i class='fa fa-shopping-cart'></i> add to cart</button>"+
+								"<button class='add-to-cart-btn' onclick=\"btnAddChart('"+result[index].id_barang+"', '"+result[index].harga+"')\"><i class='fa fa-shopping-cart'></i> add to cart</button>"+
 							"</div>"+
 						"</div>"+
 					"</div>";
@@ -139,6 +139,45 @@
 		}
 		$('#postsList').html(row)
 	}
+
+  function btnAddChart(id_barang, harga){
+    event.preventDefault();
+
+    <?php
+      if(!$this->session->userdata('id_user')){
+        echo "alert('Login Dulu');return;";
+      }
+    ?>
+
+    $.ajax({
+      url: "<?php echo base_url('front/addToChart') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: {
+        id_barang,
+        harga
+      },
+      success: function(data){
+        if (data.status == "success") {
+          toastr.info(data.message)
+          count_chart()
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  }
+
+  function count_chart(){
+    $.ajax({
+      url: "<?php echo base_url('front/count_chart') ?>",
+      type: "GET",
+      dataType: "HTML",
+      success: function(data){
+        $("#jml_chart").text(data)
+      }
+    })
+  }
 
 	/* Fungsi formatRupiah */
 	function formatRupiah(angka, prefix){

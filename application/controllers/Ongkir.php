@@ -1,0 +1,41 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Ongkir extends CI_Controller {
+
+  public function __construct(){
+      parent::__construct();
+  
+      // if(!$this->session->userdata('id_user'))
+      //   redirect('login', 'refresh');
+  }
+
+  public function kotaAsal(){
+
+      $curl = curl_init();
+      
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.rajaongkir.com/starter/city",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_HTTPHEADER => array(
+          "key: 11759a021d2d7a41c02e611a3ff2efa0"
+        ),
+      ));
+      
+      $response = curl_exec($curl);
+      $err = curl_error($curl);
+      
+      curl_close($curl);
+      
+      if ($err) {
+        echo "cURL Error #:" . $err;
+      } else {
+        echo $response;
+      }
+  }
+}

@@ -9,8 +9,8 @@ class Front extends CI_Controller {
         // if(!$this->session->userdata('id_user'))
         //   redirect('login', 'refresh');
         $this->load->helper('url');
-		$this->load->library('pagination');
-		$this->load->database();
+        $this->load->library('pagination');
+        $this->load->database();
     }
 
 	public function index()
@@ -20,8 +20,9 @@ class Front extends CI_Controller {
 
         $data['merk'] = $this->db->query("select distinct merk from tb_barang where merk not in ('-') order by merk")->result();
         
-        $head['jml_chart'] = $this->db->query("select count(*) as jml_chart from tb_temp_chart")->row()->jml_chart;
-        $this->load->view('template/front/header',$head);
+        
+
+        $this->load->view('template/front/header');
         $this->load->view('template/front/menu');
         $this->load->view('pages/front/home', $data);
         $this->load->view('template/front/footer');
@@ -68,5 +69,66 @@ class Front extends CI_Controller {
  
         echo json_encode($data);
   	}
+
+    public function addToChart(){
+      $this->load->library('form_validation');
+
+      $this->form_validation->set_rules('id_barang', 'Barang', 'required');
+
+      if($this->form_validation->run() == FALSE){
+        // echo validation_errors();
+        $output = array("status" => "error", "message" => validation_errors());
+        echo json_encode($output);
+        return false;
+      }
+  
+      $cek_barang = $this->db->query("select count(*) as cek_barang from tb_temp_chart WHERE id_barang='".$this->input->post('id_barang')."' AND id_user='".$this->session->userdata('id_user')."'")->row()->cek_barang;
+      if($cek_barang == 0){
+        $data = array(
+          "id_barang" => $this->input->post('id_barang'),
+          "id_user" => $this->session->userdata('id_user'),
+          "qty" => 1,
+          "harga" => $this->input->post('harga'),
+        );
+        $this->db->insert('tb_temp_chart', $data);
+      }else{
+        $this->db->query("
+        UPDATE tb_temp_chart SET qty = qty+1 
+        WHERE id_barang = '".$this->input->post('id_barang')."'
+        AND id_user = '".$this->session->userdata('id_user')."'
+        ");
+      }
+      
+      $output = array("status" => "success", "message" => "Berhasil memasukkan ke keranjang");
+      echo json_encode($output);
+    }
+
+    public function count_chart(){
+      $jml_chart = $this->db->query("select count(*) as jml_chart from tb_temp_chart WHERE id_user='".$this->session->userdata('id_user')."'")->row()->jml_chart;
+      echo $jml_chart;
+    }
+
+  public function checkout(){
+        $data['item_order'] = $this->db->query("
+        SELECT 
+        A.id_barang, A.qty, A.harga, B.nm_barang, (A.qty * A.harga) as sub_total
+        FROM tb_temp_chart A
+        INNER JOIN tb_barang B ON A.id_barang = B.id_barang
+        WHERE A.id_user='".$this->session->userdata('id_user')."'
+        ")->result();
+        $this->load->view('template/front/header');
+        $this->load->view('template/front/menu');
+        $this->load->view('pages/front/checkout', $data);
+        $this->load->view('template/front/footer');
+	}
+
+  public function deleteKeranjang(){
+    $this->db->where('id_barang', $this->input->post('id_barang'));
+    $this->db->where('id_user', $this->session->userdata('id_user'));
+    $this->db->delete('tb_temp_chart');
+
+    $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
+    echo json_encode($output);
+  }
 
 }
