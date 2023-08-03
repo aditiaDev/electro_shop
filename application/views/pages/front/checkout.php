@@ -34,93 +34,102 @@
     <div class="container">
       <!-- row -->
       <div class="row">
-
-        <div class="col-md-7">
-          <!-- Billing Details -->
-          <div class="billing-details">
-            <div class="section-title">
-              <h3 class="title">Kirim ke Alamat</h3>
+        <form id="FRM_DATA">
+          <div class="col-md-6">
+            <!-- Billing Details -->
+            <div class="billing-details">
+              <div class="section-title">
+                <h3 class="title">Kirim ke Alamat</h3>
+              </div>
+              <div class="form-group">
+                <label>Nama Penerima</label>
+                <input class="input" type="text" name="nm_penerima" placeholder="Nama Penerima">
+              </div>
+              <div class="form-group">
+                <label>Kota Asal</label>
+                <select class="form-control select2" name="kota_asal" required onChange="cekOngkir()">
+                  <option value="">Pilih</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Kota Tujuan</label>
+                <select class="form-control select2" name="kota_tujuan" required onChange="cekOngkir()">
+                  <option value="">Pilih</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Kurir</label>
+                <select class="form-control" name="kurir" required onChange="cekOngkir()">
+                  <option value="">Pilih</option>
+                  <option value="jne">JNE</option>
+                  <option value="tiki">TIKI</option>
+                  <option value="pos">POS INDONESIA</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Layanan</label>
+                <select class="form-control select2" name="layanan" required onChange="pilihLayanan()">
+                  <option value="">Pilih</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="">Harga</label>
+                <input class="input" type="text" name="harga_kirim" readonly value="0">
+              </div>
+              <div class="form-group">
+                <label for="">Estimasi</label>
+                <input class="input" type="text" name="estimasi" readonly>
+              </div>
+              <div class="form-group">
+                <label for="">Alamat Lengkap Penerima</label>
+                <textarea class="input" name="alamat_penerima"></textarea>
+              </div>
             </div>
-            <div class="form-group">
-              <label>Nama Penerima</label>
-              <input class="input" type="text" name="nm_penerima" placeholder="Nama Penerima">
-            </div>
-            <div class="form-group">
-              <label>Kota Asal</label>
-              <select class="form-control select2" name="kota_asal" required></select>
-            </div>
-            <div class="form-group">
-              <label>Kota Tujuan</label>
-              <select class="form-control select2" name="kota_tujuan" required></select>
-            </div>
-            <div class="form-group">
-              <label for="">Kurir</label>
-              <select class="form-control" name="kurir" required>
-                <option value="jne">JNE</option>
-                <option value="tiki">TIKI</option>
-                <option value="pos">POS INDONESIA</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="">Layanan</label>
-              <input class="input" type="text" name="layanan" >
-            </div>
-            <div class="form-group">
-              <label for="">Harga</label>
-              <input class="input" type="text" name="harga" >
-            </div>
-            <div class="form-group">
-              <label for="">Estimasi</label>
-              <input class="input" type="text" name="estimasi" >
-            </div>
-            <div class="form-group">
-              <label for="">Alamat Lengkap Penerima</label>
-              <textarea class="input" name="alamat_penerima"></textarea>
-            </div>
+            <!-- /Billing Details -->
           </div>
-          <!-- /Billing Details -->
-        </div>
 
-        <!-- Order Details -->
-        <div class="col-md-5 order-details">
-          <div class="section-title text-center">
-            <h3 class="title">Keranjang Anda</h3>
-          </div>
-          <div class="order-summary">
-            <table id="tb_item" class="table table-bordered table-hover" style="font-size:12px;">
-              <thead>
-                <tr>
-                  <th style="width: 170px;">Item</th>
-                  <th style="width:70px;">Qty</th>
-                  <th>Harga</th>
-                  <th style="width:100px;">Sub Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php 
-                  $total=0;
-                  foreach($item_order as $item){ 
-                ?>
-                  <tr id="row_<?= $item->id_barang ?>">
-                    <td><?= $item->nm_barang ?><button type="button" onClick="deleteRow('<?= $item->id_barang ?>')" class="bootbox-close-button close modClose" >×</button></td>
-                    <td style="text-align:right;"><input type="text" name="qty[]" id="qty_<?= $item->id_barang ?>" onChange="subTotal('<?= $item->id_barang ?>')" class="input" value="<?= $item->qty ?>"></td>
-                    <td style="text-align:right;" id="harga_<?= $item->id_barang ?>"><?= rupiah($item->harga,'') ?></td>
-                    <td style="text-align:right;" class="subTotal" id="subTotal_<?= $item->id_barang ?>"><?= rupiah($item->sub_total,'') ?></td>
+          <!-- Order Details -->
+          <div class="col-md-6 order-details">
+            <div class="section-title text-center">
+              <h3 class="title">Keranjang Anda</h3>
+            </div>
+            <div class="order-summary">
+              <table id="tb_item" class="table table-bordered table-hover" style="font-size:12px;">
+                <thead>
+                  <tr>
+                    <th style="width: 170px;">Item</th>
+                    <th style="width:70px;">Qty</th>
+                    <th>Harga</th>
+                    <th style="width:100px;">Sub Total</th>
                   </tr>
-                <?php 
-                  $total += $item->sub_total;
-                  } 
-                ?>
-              </tbody>
-            </table>
-            <div class="order-col">
-              <div><strong>TOTAL</strong></div>
-              <div><strong class="order-total" id="total_text"><?= rupiah($total,'Rp.') ?></strong></div>
+                </thead>
+                <tbody>
+                  <?php 
+                    $total=0;
+                    foreach($item_order as $item){ 
+                  ?>
+                    <tr id="row_<?= $item->id_barang ?>">
+                      <td><input type="hidden" name="id_barang[]" value="<?= $item->id_barang ?>" ><?= $item->nm_barang ?><button type="button" onClick="deleteRow('<?= $item->id_barang ?>')" class="bootbox-close-button close modClose" >×</button></td>
+                      <td style="text-align:right;"><input type="text" name="qty[]" id="qty_<?= $item->id_barang ?>" onChange="subTotal('<?= $item->id_barang ?>')" class="input" value="<?= $item->qty ?>"></td>
+                      <td style="text-align:right;" id="harga_<?= $item->id_barang ?>"><input type="hidden" name="harga[]" value="<?= $item->harga?>"><?= rupiah($item->harga,'') ?></td>
+                      <td style="text-align:right;" class="subTotal" id="subTotal_<?= $item->id_barang ?>"><?= rupiah($item->sub_total,'') ?></td>
+                    </tr>
+                  <?php 
+                    $total += $item->sub_total;
+                    } 
+                  ?>
+                </tbody>
+              </table>
+              <div class="order-col">
+                <div><strong>TOTAL</strong></div>
+                <div><strong class="order-total" id="total_text"><?= rupiah($total,'Rp.') ?></strong></div>
+              </div>
             </div>
+            
+            <a href="javascript:;" id="btnCheckOut" class="primary-btn order-submit">Checkout</a>
           </div>
-          
-          <a href="#" class="primary-btn order-submit">Checkout</a>
-        </div>
+        </form>
+        
         <!-- /Order Details -->
       </div>
       <!-- /row -->
@@ -163,13 +172,53 @@
       success: function(data){
         // console.log(data['rajaongkir']['results'])
         $.map(data.rajaongkir.results, function (item) {
-          console.log(item)
-          var isine = "<option>"+item.city_name+"</option>"
+          // console.log(item)
+          let isine = "<option value='"+item.city_id+"'>"+item.city_name+"</option>"
           $("[name='kota_asal']").append(isine)
           $("[name='kota_tujuan']").append(isine)
         })
       }
     })
+  }
+
+  function cekOngkir(){
+    let kota_asal = $("[name='kota_asal']").val()
+    let kota_tujuan = $("[name='kota_tujuan']").val()
+    let kurir = $("[name='kurir']").val()
+
+    if( kota_asal == "" || kota_tujuan == "" || kurir == "" ) return
+
+    $.ajax({
+      url: "<?php echo base_url('ongkir/getHargaOngkir') ?>",
+      type: "POST",
+      data: {
+        kota_asal,
+        kota_tujuan,
+        kurir
+      },
+      dataType: "JSON",
+      success: function(data){
+        datane = data['rajaongkir']['results'][0]['costs']
+        // console.log(datane)
+        $.map(datane, function (item) {
+          console.log(item)
+          let isine = "<option value='"+item['cost'][0]['value']+"' estimasi='"+item['cost'][0]['etd']+"'>"+item.service+"</option>"
+          $("[name='layanan']").append(isine)
+        })
+      }
+    })
+  }
+
+  function pilihLayanan(){
+    let harga = $("[name='layanan']").val()
+    $("[name='harga_kirim']").val(harga)
+
+    var element = $("[name='layanan']").find('option:selected'); 
+    var myTag = element.attr("estimasi"); 
+
+    $("[name='estimasi']").val(myTag); 
+
+    total()
   }
 
   function subTotal(id){
@@ -186,15 +235,47 @@
   function total(){
     var tot=0; var subTotal=0;
     var jml_part = $("[name='qty[]']").length - 1;
+    let harga = $("[name='harga_kirim']").val()
     for (var j = 0; j <= jml_part; j++) {
         subTotal = $(".subTotal").eq(j).text().split('.').join('');
         tot += parseFloat(subTotal);
 
     }
 
+    tot += parseFloat(harga);
+
     $("#total_text").text(formatRupiah(tot.toString(), ''));
 
   }
+
+  $("#btnCheckOut").click(function(){
+    event.preventDefault();
+    // var $dataElements = $('#tb_item').find('td'),
+    // data = [];
+
+    // $.each($dataElements, function(i, elem){
+    //     data.push($(elem).html());
+    // });
+    formData = $("#FRM_DATA").serialize()
+    $.ajax({
+      url: "<?php echo site_url('front/checkOutSave') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: formData,
+      success: function(data){
+        console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
+          setTimeout(() => {
+            window.location="<?php echo base_url('home');?>"
+          }, 500);
+          
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
 
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){

@@ -138,6 +138,8 @@
 		<script src="<?php echo base_url(); ?>assets/template/front/js/jquery.zoom.min.js"></script>
 		<script src="<?php echo base_url(); ?>assets/template/front/js/main.js"></script>
     <script src="<?php echo base_url('/assets/toastr/toastr.min.js'); ?>"></script>
+    <script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery.dataTables.min.js"></script>
+		<script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery.dataTables.bootstrap.min.js"></script>
 
         </body>
 </html>

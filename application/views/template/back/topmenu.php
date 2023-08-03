@@ -116,17 +116,35 @@
 
 					<b class="arrow"></b>
 				</li>
+
+        <li class="hover">
+					<a href="<?php echo base_url("transaksi/datapenjualan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Data Penjualan
+					</a>
+
+					<b class="arrow"></b>
+				</li>
 			</ul>
 		</li>
 
-    <li class="<?= ($this->uri->segment(1) == 'chart') ? 'active open' : '' ?> hover">
+    <li class="<?= ($this->uri->segment(1) == 'usercomplaint') ? 'active open' : '' ?> hover">
+			<a href="<?php echo base_url("usercomplaint")?>">
+				<i class="menu-icon fa fa-comments-o"></i>
+				<span class="menu-text"> Customer Complaint </span>
+			</a>
+
+			<b class="arrow"></b>
+		</li>
+
+    <!-- <li class="<?= ($this->uri->segment(1) == 'chart') ? 'active open' : '' ?> hover">
 			<a href="<?php echo base_url("chartPenjualan")?>">
 				<i class="menu-icon fa fa-bar-chart"></i>
 				<span class="menu-text"> Grafik Penjualan </span>
 			</a>
 
 			<b class="arrow"></b>
-		</li>
+		</li> -->
 
 	</ul><!-- /.nav-list -->
 </div>

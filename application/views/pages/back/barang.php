@@ -30,8 +30,9 @@
                       <th>ID Barang</th>
                       <th>Nama Barang</th>
                       <th>Merk</th>
-                      <th>Harga Satuan</th>
+                      <th>Harga</th>
                       <th>Unit</th>
+                      <th>Berat (Kg)</th>
                       <th>Stock</th>
                       <!-- <th>Foto</th> -->
                       <th width="20%">Keterangan</th>
@@ -72,13 +73,18 @@
                     </select>
                   </div>
                 </div>
-                
-              </div>
-              <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
                     <label>Nama Barang</label>
                     <input type="text" class="form-control" name="nm_barang" >
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Berat Barang (Kg)</label>
+                    <input type="text" class="form-control" name="berat_barang" >
                   </div>
                 </div>
                 <div class="col-sm-6">
@@ -135,7 +141,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="button" class="btn btn-secondary" id="btnBatal" data-bs-dismiss="modal">Batal</button>
               <button type="submit" class="btn btn-primary" id="BTN_SAVE">Simpan</button>
             </div>
           </form>
@@ -159,6 +165,10 @@
       $("[name='src_jenis']").change(function(){
         REFRESH_DATA()
       })
+
+      $("#btnBatal").click(function()[
+        $("#modal_add").modal('hide')
+      ])
 
       $("#add_data").click(function(){
         $("#FRM_DATA")[0].reset()
@@ -220,6 +230,7 @@
               { "data": "merk"},
               { "data": "harga"},
               { "data": "unit_pengukuran"},
+              { "data": "berat_barang"},
               { "data": "stock"},
               { "data": "ket_barang"},
               // { "data": "foto"},

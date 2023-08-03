@@ -60,4 +60,9 @@ $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
 
 $route['transaksi/penjualan'] = 'penjualan';
+$route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';
+
 $route['checkout'] = 'front/checkout';
+$route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';
+
+$route['usercomplaintdtl/(:any)'] = 'usercomplaint/usercomplaintdtl/$1';

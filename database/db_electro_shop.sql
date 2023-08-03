@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 02 Agu 2023 pada 02.04
+-- Waktu pembuatan: 03 Agu 2023 pada 17.18
 -- Versi server: 10.4.10-MariaDB
 -- Versi PHP: 7.3.12
 
@@ -34,6 +34,7 @@ CREATE TABLE `tb_barang` (
   `nm_barang` varchar(150) DEFAULT NULL,
   `harga` float DEFAULT NULL,
   `unit_pengukuran` varchar(10) DEFAULT '',
+  `berat_barang` float NOT NULL,
   `stock` float NOT NULL,
   `merk` varchar(30) NOT NULL,
   `foto_barang` text DEFAULT NULL,
@@ -44,11 +45,11 @@ CREATE TABLE `tb_barang` (
 -- Dumping data untuk tabel `tb_barang`
 --
 
-INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
-('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
-('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
-('B2300003', 'K00001', 'Mousepad', 15000, 'EA', 20, '-', '1690690381510.png', 'Mousepad Murah'),
-('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 10, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
+INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `berat_barang`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
+('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 0.5, 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
+('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 3, 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
+('B2300003', 'K00001', 'Mousepad', 15000, 'EA', 0.5, 20, '-', '1690690381510.png', 'Mousepad Murah'),
+('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 1, 10, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
 
 -- --------------------------------------------------------
 
@@ -88,11 +89,35 @@ CREATE TABLE `tb_barang_masuk` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `tb_complaint`
+--
+
+CREATE TABLE `tb_complaint` (
+  `id_complaint` varchar(15) NOT NULL,
+  `id_penjualan` varchar(15) NOT NULL,
+  `id_user` varchar(15) NOT NULL,
+  `tgl_complaint` date NOT NULL,
+  `judul_complaint` varchar(40) DEFAULT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `status` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_complaint`
+--
+
+INSERT INTO `tb_complaint` (`id_complaint`, `id_penjualan`, `id_user`, `tgl_complaint`, `judul_complaint`, `deskripsi`, `foto`, `status`) VALUES
+('C2300001', 'J2300001', 'U2300003', '2023-08-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN');
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tb_dtl_penjualan`
 --
 
 CREATE TABLE `tb_dtl_penjualan` (
-  `id_dtl_penjualan` varchar(15) NOT NULL,
+  `id_dtl_penjualan` int(11) NOT NULL,
   `id_penjualan` varchar(15) DEFAULT NULL,
   `id_barang` varchar(15) DEFAULT NULL,
   `jumlah` float DEFAULT NULL,
@@ -100,6 +125,39 @@ CREATE TABLE `tb_dtl_penjualan` (
   `diskon` float NOT NULL,
   `subtotal` float DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_dtl_penjualan`
+--
+
+INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`, `jumlah`, `harga`, `diskon`, `subtotal`) VALUES
+(13, 'J2300001', 'B2300002', 1, 8000000, 0, 8000000),
+(14, 'J2300001', 'B2300003', 1, 15000, 0, 15000),
+(15, 'J2300001', 'B2300004', 2, 80000, 0, 160000);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_jawab_complaint`
+--
+
+CREATE TABLE `tb_jawab_complaint` (
+  `id_complaint` varchar(15) DEFAULT NULL,
+  `tgl_jawab` datetime DEFAULT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `oleh` enum('ADMIN','PELANGGAN') DEFAULT NULL,
+  `id_user` varchar(15) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_jawab_complaint`
+--
+
+INSERT INTO `tb_jawab_complaint` (`id_complaint`, `tgl_jawab`, `deskripsi`, `oleh`, `id_user`) VALUES
+('C2300001', '2023-08-03 17:57:36', 'Ada yang bisa kami bantu?', 'ADMIN', 'U2300001'),
+('C2300001', '2023-08-03 18:00:36', 'Saya ingin komplain perihal barang saya yg rusak waktu pengiriman', 'PELANGGAN', 'U2300003'),
+('C2300001', '2023-08-03 19:37:10', 'Oke', 'PELANGGAN', 'U2300003'),
+('C2300001', '2023-08-03 21:36:42', 'Mantabs', 'ADMIN', 'SU');
 
 -- --------------------------------------------------------
 
@@ -170,6 +228,7 @@ CREATE TABLE `tb_pembayaran` (
 
 CREATE TABLE `tb_pengiriman` (
   `id_pengiriman` int(11) NOT NULL,
+  `id_penjualan` varchar(15) NOT NULL,
   `nm_penerima` varchar(50) NOT NULL,
   `kota_asal` varchar(50) DEFAULT NULL,
   `kota_tujuan` varchar(50) DEFAULT NULL,
@@ -179,6 +238,13 @@ CREATE TABLE `tb_pengiriman` (
   `layanan` varchar(50) DEFAULT NULL,
   `alamat_penerima` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_pengiriman`
+--
+
+INSERT INTO `tb_pengiriman` (`id_pengiriman`, `id_penjualan`, `nm_penerima`, `kota_asal`, `kota_tujuan`, `kurir`, `harga`, `estimasi`, `layanan`, `alamat_penerima`) VALUES
+(7, 'J2300001', 'Test penerima', '209', '398', 'jne', 11000, '3-6', '11000', 'Test Alamat');
 
 -- --------------------------------------------------------
 
@@ -191,12 +257,18 @@ CREATE TABLE `tb_penjualan` (
   `tgl_penjualan` datetime DEFAULT NULL,
   `id_pelanggan` varchar(15) DEFAULT NULL,
   `tipe_penjualan` enum('ONLINE','ONSITE') DEFAULT NULL,
-  `jasa_pengiriman` varchar(100) DEFAULT NULL,
-  `ongkir` float DEFAULT NULL,
   `diskon` float NOT NULL,
   `tot_biaya_barang` float DEFAULT NULL,
-  `tot_akhir` float DEFAULT NULL
+  `tot_akhir` float DEFAULT NULL,
+  `status_penjualan` enum('DIKIRIM','SELESAI','DISIAPKAN','DITERIMA') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_penjualan`
+--
+
+INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `tipe_penjualan`, `diskon`, `tot_biaya_barang`, `tot_akhir`, `status_penjualan`) VALUES
+('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, 'DITERIMA');
 
 -- --------------------------------------------------------
 
@@ -210,15 +282,6 @@ CREATE TABLE `tb_temp_chart` (
   `qty` float NOT NULL,
   `harga` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data untuk tabel `tb_temp_chart`
---
-
-INSERT INTO `tb_temp_chart` (`id_barang`, `id_user`, `qty`, `harga`) VALUES
-('B2300004', 'U2300003', 2, 80000),
-('B2300003', 'U2300003', 1, 15000),
-('B2300002', 'U2300003', 1, 8000000);
 
 -- --------------------------------------------------------
 
@@ -291,6 +354,12 @@ ALTER TABLE `tb_barang_masuk`
   ADD PRIMARY KEY (`id_barang_masuk`);
 
 --
+-- Indeks untuk tabel `tb_complaint`
+--
+ALTER TABLE `tb_complaint`
+  ADD PRIMARY KEY (`id_complaint`);
+
+--
 -- Indeks untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
@@ -343,10 +412,16 @@ ALTER TABLE `tb_user`
 --
 
 --
+-- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
+--
+ALTER TABLE `tb_dtl_penjualan`
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT untuk tabel `tb_pengiriman`
 --
 ALTER TABLE `tb_pengiriman`
-  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

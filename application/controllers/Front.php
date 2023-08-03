@@ -131,4 +131,105 @@ class Front extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function generateId(){
+    $unik = 'J'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_penjualan) LAST_NO FROM tb_penjualan WHERE id_penjualan LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
+  public function checkOutSave(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('nm_penerima', 'Nama Penerima', 'required');
+    $this->form_validation->set_rules('kota_asal', 'kota_asal', 'required');
+    $this->form_validation->set_rules('kota_tujuan', 'kota_tujuan', 'required');
+    $this->form_validation->set_rules('kurir', 'kurir', 'required');
+    $this->form_validation->set_rules('layanan', 'layanan', 'required');
+    $this->form_validation->set_rules('harga_kirim', 'harga Pengiriman', 'required');
+    $this->form_validation->set_rules('estimasi', 'estimasi', 'required');
+    $this->form_validation->set_rules('alamat_penerima', 'alamat_penerima', 'required');
+
+
+    if($this->form_validation->run() == FALSE){
+      // echo validation_errors();
+      $output = array("status" => "error", "message" => validation_errors());
+      echo json_encode($output);
+      return false;
+    }
+
+    $id = $this->generateId();
+
+    $id_user = $this->session->userdata('id_user');
+
+    $id_pelanggan = $this->db->query("SELECT id_pelanggan FROM tb_pelanggan WHERE id_user = '".$id_user."'")->row()->id_pelanggan;
+    
+    $data = array(
+              "id_penjualan" => $id,
+              "tgl_penjualan" => date('Y-m-d H:i:s'),
+              "id_pelanggan" => $id_pelanggan,
+              "tipe_penjualan" => 'ONLINE',
+              "diskon" => 0,
+              "tot_biaya_barang" => 0,
+              "tot_akhir" => 0,
+              "status_penjualan" => "DISIAPKAN"
+            );
+    $this->db->insert('tb_penjualan', $data);
+
+    $data = array(
+          "id_penjualan" => $id,
+          "nm_penerima" => $this->input->post('nm_penerima'),
+          "kota_asal" => $this->input->post('kota_asal'),
+          "kota_tujuan" => $this->input->post('kota_tujuan'),
+          "kurir" => $this->input->post('kurir'),
+          "harga" => $this->input->post('harga_kirim'),
+          "estimasi" => $this->input->post('estimasi'),
+          "layanan" => $this->input->post('layanan'),
+          "alamat_penerima" => $this->input->post('alamat_penerima'),
+        );
+    $this->db->insert('tb_pengiriman', $data);
+
+    $subtotal = 0;
+    $total_barang = 0;
+    $total_akhir = 0;
+    foreach($this->input->post('id_barang') as $key => $each){
+      $subtotal = $this->input->post('qty')[$key] * $this->input->post('harga')[$key];
+      $total_barang = $total_barang + $subtotal;
+
+      $dataDtl = array(
+        "id_penjualan" => $id,
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga" => $this->input->post('harga')[$key],
+        "diskon" => 0,
+        "subtotal" => $subtotal,
+      );
+
+      $this->db->insert('tb_dtl_penjualan', $dataDtl);
+    }
+
+    $total_akhir = $total_barang + $this->input->post('harga_kirim');
+
+    $this->db->query("UPDATE tb_penjualan 
+    SET tot_biaya_barang = '".$total_barang."', tot_akhir = '".$total_akhir."'
+    WHERE id_penjualan = '".$id."'
+    ");
+
+    $this->db->query("
+    DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
+    ");
+
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
+    echo json_encode($output);
+
+  }
+
 }

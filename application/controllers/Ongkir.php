@@ -55,6 +55,7 @@ class Ongkir extends CI_Controller {
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "POST",
       CURLOPT_POSTFIELDS => "origin=".$kota_asal."&destination=".$kota_tujuan."&weight=1&courier=".$kurir."",
+      // CURLOPT_POSTFIELDS => "origin=501&destination=114&weight=1700&courier=jne",
       CURLOPT_HTTPHEADER => array(
         "content-type: application/x-www-form-urlencoded",
         "key: 11759a021d2d7a41c02e611a3ff2efa0"
