@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 03 Agu 2023 pada 17.18
+-- Waktu pembuatan: 05 Agu 2023 pada 01.08
 -- Versi server: 10.4.10-MariaDB
 -- Versi PHP: 7.3.12
 
@@ -133,7 +133,10 @@ CREATE TABLE `tb_dtl_penjualan` (
 INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`, `jumlah`, `harga`, `diskon`, `subtotal`) VALUES
 (13, 'J2300001', 'B2300002', 1, 8000000, 0, 8000000),
 (14, 'J2300001', 'B2300003', 1, 15000, 0, 15000),
-(15, 'J2300001', 'B2300004', 2, 80000, 0, 160000);
+(15, 'J2300001', 'B2300004', 2, 80000, 0, 160000),
+(16, 'J2300002', 'B2300004', 2, 80000, 0, 160000),
+(17, 'J2300002', 'B2300002', 1, 8000000, 10000, 7990000),
+(18, 'J2300002', 'B2300001', 1, 50000, 0, 50000);
 
 -- --------------------------------------------------------
 
@@ -268,7 +271,8 @@ CREATE TABLE `tb_penjualan` (
 --
 
 INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `tipe_penjualan`, `diskon`, `tot_biaya_barang`, `tot_akhir`, `status_penjualan`) VALUES
-('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, 'DITERIMA');
+('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, 'DITERIMA'),
+('J2300002', '2023-08-05 05:42:43', 'GUEST', 'ONSITE', 0, 8200000, 8200000, 'SELESAI');
 
 -- --------------------------------------------------------
 
@@ -415,7 +419,7 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_pengiriman`

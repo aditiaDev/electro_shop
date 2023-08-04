@@ -73,4 +73,68 @@ class Penjualan extends CI_Controller {
     $output = array("status" => "success", "message" => "Data Berhasil di Update");
     echo json_encode($output);
   }
+
+  public function generateId(){
+    $unik = 'J'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_penjualan) LAST_NO FROM tb_penjualan WHERE id_penjualan LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
+  public function saveCheckout(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('id_pelanggan', 'Pelanggan', 'required');
+    $this->form_validation->set_rules('id_barang[]', 'Barang', 'required');
+
+    
+    if($this->form_validation->run() == FALSE){
+      // echo validation_errors();
+      $output = array("status" => "error", "message" => validation_errors());
+      echo json_encode($output);
+      return false;
+    }
+
+    $id = $this->generateId();
+    
+    $data = array(
+              "id_penjualan" => $id,
+              "tgl_penjualan" => date('Y-m-d H:i:s'),
+              "id_pelanggan" => $this->input->post('id_pelanggan'),
+              "tipe_penjualan" => 'ONSITE',
+              "diskon" => $this->input->post('diskon_header'),
+              "tot_biaya_barang" => $this->input->post('tot_biaya_barang'),
+              "tot_akhir" => $this->input->post('tot_akhir'),
+              "status_penjualan" => "SELESAI"
+            );
+    $this->db->insert('tb_penjualan', $data);
+
+    $subtotal = 0;
+    foreach($this->input->post('id_barang') as $key => $each){
+      $subtotal = ( $this->input->post('qty')[$key] * $this->input->post('harga')[$key] ) - $this->input->post('diskon')[$key];
+
+
+      $dataDtl = array(
+        "id_penjualan" => $id,
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga" => $this->input->post('harga')[$key],
+        "diskon" => $this->input->post('diskon')[$key],
+        "subtotal" => $subtotal,
+      );
+
+      $this->db->insert('tb_dtl_penjualan', $dataDtl);
+    }
+    
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
+    echo json_encode($output);
+  }
 }

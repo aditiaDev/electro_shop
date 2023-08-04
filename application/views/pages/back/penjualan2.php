@@ -30,70 +30,72 @@
 		<div class="page-content">
 
 			<div class="row">
-        <div class="col-md-5" style="padding-left: 1px;padding-right: 1px;">
-          <div style="overflow-y: auto;height:400px;">
-            <table id="tb_item" class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th style="width: 270px;">Item</th>
-                  <th style="width:80px;">Qty</th>
-                  <th>Harga</th>
-                  <th style="width:80px;">Diskon<br>Value</th>
-                  <th style="width:100px;">Sub Total</th>
-                </tr>
-              </thead>
-              <tbody>
+        <form id="FRM_DATA">
+          <div class="col-md-5" style="padding-left: 1px;padding-right: 1px;">
+            <div style="overflow-y: auto;height:400px;">
+              <table id="tb_item" class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th style="width: 270px;">Item</th>
+                    <th style="width:80px;">Qty</th>
+                    <th>Harga</th>
+                    <th style="width:80px;">Diskon<br>Value</th>
+                    <th style="width:100px;">Sub Total</th>
+                  </tr>
+                </thead>
+                <tbody>
 
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <table class="table table-bordered">
-              <tbody>
-                <tr>
-                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Total</td>
-                  <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="total_text">0</td>
-                </tr>
-                <tr>
-                  <td>Pelanggan</td>
-                  <td>
-                    <input type="text" class="form-control" name="id_pelanggan" style="float:left;width:70%;" placeholder="Kode Pelanggan">
-                    <button type="button" class="btn btn-sm btn-secondary" id="BTN_PELANGGAN" ><i class="fa fa-list"></i></button>
-                  </td>
-                  <td id="nm_pelanggan" style="font-size:15px;">Non Member</td>
-                </tr>
-                <tr>
-                  <td></td>
-                  <td>Diskon (%)</td>
-                  <td><input type="number" max="100" class="form-control" value="0"></td>
-                </tr>
-                <tr>
-                  <td  style="width: 220px;font-size: 20px;font-weight: bold;">Order Value</td>
-                  <td colspan="2" style="color:red;text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 25px;" id="order_text">0</td>
-                </tr>
-                <tr>
-                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Bayar</td>
-                  <td colspan="2"><input type="text" name="bayar"  class="form-control"></td>
-                </tr>
-                <tr>
-                  <td  style="width: 220px;font-size: 18px;font-weight: bold;">Kembali</td>
-                  <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="kembali_text">0</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <div class="col-md-4" style="padding: 0px;">
-              <button class="btn btn-warning btn-block"><i class="ace-icon fa fa-times bigger-160"></i> Cancel</button>
+                </tbody>
+              </table>
             </div>
-            <div class="col-md-4" style="padding: 0px;">
-              <button class="btn btn-light btn-block"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
+            <div>
+              <table class="table table-bordered">
+                <tbody>
+                  <tr>
+                    <td  style="width: 220px;font-size: 18px;font-weight: bold;">Total</td>
+                    <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="total_text">0</td>
+                  </tr>
+                  <tr>
+                    <td>Pelanggan</td>
+                    <td>
+                      <input type="text" class="form-control" value="GUEST" name="id_pelanggan" style="float:left;width:70%;" placeholder="Kode Pelanggan">
+                      <button type="button" class="btn btn-sm btn-secondary" id="BTN_PELANGGAN" ><i class="fa fa-list"></i></button>
+                    </td>
+                    <td id="nm_pelanggan" style="font-size:15px;">Non Member</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>Diskon (%)</td>
+                    <td><input type="number" name="diskon_header" onchange="diskon_calculate()" max="100" class="form-control" value="0"></td>
+                  </tr>
+                  <tr>
+                    <td  style="width: 220px;font-size: 20px;font-weight: bold;">Order Value</td>
+                    <td colspan="2" style="color:red;text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 25px;" id="order_text">0</td>
+                  </tr>
+                  <tr>
+                    <td  style="width: 220px;font-size: 18px;font-weight: bold;">Bayar</td>
+                    <td colspan="2"><input type="text" name="bayar"  class="form-control"></td>
+                  </tr>
+                  <tr>
+                    <td  style="width: 220px;font-size: 18px;font-weight: bold;">Kembali</td>
+                    <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="kembali_text">0</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="col-md-4" style="padding: 0px;">
-              <button class="btn btn-danger btn-block"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Pay</button>
+            <div>
+              <div class="col-md-4" style="padding: 0px;">
+                <button class="btn btn-warning btn-block"  id="btnCancel"><i class="ace-icon fa fa-times bigger-160"></i> Cancel</button>
+              </div>
+              <div class="col-md-4" style="padding: 0px;">
+                <button class="btn btn-light btn-block"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
+              </div>
+              <div class="col-md-4" style="padding: 0px;">
+                <button class="btn btn-danger btn-block" id="btnPay"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Pay</button>
+              </div>
             </div>
-          </div>
-        </div> 
+          </div> 
+        </form>
         <div class="col-md-2" style="overflow-y: auto;height:550px;padding-left: 1px;padding-right: 1px;">
         <button type="button" class="btn-danger block" onclick="actKategori('ALL')">ALL</button>
           <?php foreach($kategori as $kat){ ?>
@@ -104,7 +106,7 @@
           <div class="input-group">
             <input type="text" class="form-control" name="keywords" placeholder="Cari Barang">
             <div class="input-group-btn">
-              <button type="button" class="btn btn-default no-border btn-sm">
+              <button type="button" class="btn btn-default no-border btn-sm" id="btnSearch">
                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
               </button>
             </div>
@@ -205,9 +207,9 @@
           //console.log(index);
           
           t_data += '<tr id="row_'+noRow+'">'+
-                      '<td ><span class="i_barang">'+array['id_barang']+'</span><button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
+                      '<td ><span class="i_barang"><input type="hidden" name="id_barang[]" value="'+array['id_barang']+'" >'+array['id_barang']+'</span><button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
                       '<td><input type="text" name="qty[]" id="qty_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control qty" value="1"></td>'+
-                      '<td style="text-align:right;" id="harga_'+noRow+'" class="harga">'+formatRupiah(array['harga'], '')+'</td>'+
+                      '<td style="text-align:right;" id="harga_'+noRow+'" class="harga"><input type="hidden" name="harga[]" value="'+array['harga']+'" >'+formatRupiah(array['harga'], '')+'</td>'+
                       '<td><input type="text" name="diskon[]" id="diskon_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control diskon" value="0"></td>'+
                       '<td style="text-align:right;" id="subTotal_'+noRow+'" class="subTotal">'+formatRupiah(array['harga'], '')+'</td>'+
                     '</tr>'
@@ -242,8 +244,42 @@
     }
 
     $("#total_text").text(formatRupiah(tot.toString(), ''));
-
+    $("#order_text").text(formatRupiah(tot.toString(), ''));
   }
+
+  function diskon_calculate(){
+    let tot_barang = $("#total_text").text().split('.').join('');
+    let diskon = $("[name='diskon_header']").val()
+
+    let order_value = parseFloat(tot_barang) - (parseFloat(tot_barang) * parseFloat(diskon)/100)
+    $("#order_text").text(formatRupiah(order_value.toString(), ''));
+  }
+
+  $("[name='bayar']").change(function(){
+    $(this).val(formatRupiah($(this).val().toString(), ''))
+
+    let bayar = $(this).val().split('.').join('');
+
+    let order_val = $("#order_text").text().split('.').join('');
+
+    let kembali = parseFloat(bayar) - parseFloat(order_val)
+    $("#kembali_text").text(formatRupiah(kembali.toString(), ''));
+  })
+
+  $("#btnSearch").click(function(){
+    $.ajax({
+      url: "<?php echo site_url('barang/getByName') ?>",
+      type: "POST",
+      data: {
+        search : $("[name='keywords']").val()
+      },
+      dataType: "HTML",
+      success: function(data){
+        // console.log(data)
+        $("#item_data").html(data)
+      }
+    })
+  })
 
   function deleteRow(id){
     $("#row_"+id).remove();
@@ -283,6 +319,45 @@
 
       
   });
+
+  $("#btnPay").click(function(){
+    event.preventDefault()
+
+    if($("[name='qty[]']").length == 0){
+      alert("Belum ada Item di keranjang")
+      return
+    }
+
+    let tot_biaya_barang = $("#total_text").text().split('.').join('');
+    let tot_akhir = $("#order_text").text().split('.').join('');
+    let frmData = $("#FRM_DATA").serialize()
+    frmData+="&tot_biaya_barang="+tot_biaya_barang+"&tot_akhir="+tot_akhir
+
+    $.ajax({
+      url: "<?php echo site_url('penjualan/saveCheckout') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: frmData,
+      beforeSend: function () {
+        $("#LOADER").show();
+      },
+      complete: function () {
+        $("#LOADER").hide();
+      },
+      success: function(data){
+        // console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
+          // setTimeout(() => {
+          //   location.reload();
+          // }, 500);
+          
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
 
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){
