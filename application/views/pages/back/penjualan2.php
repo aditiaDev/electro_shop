@@ -88,7 +88,7 @@
                 <button class="btn btn-warning btn-block"  id="btnCancel"><i class="ace-icon fa fa-times bigger-160"></i> Cancel</button>
               </div>
               <div class="col-md-4" style="padding: 0px;">
-                <button class="btn btn-light btn-block"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
+                <button class="btn btn-light btn-block" id="btnPrint"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
               </div>
               <div class="col-md-4" style="padding: 0px;">
                 <button class="btn btn-danger btn-block" id="btnPay"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Pay</button>
@@ -359,6 +359,16 @@
     })
   })
 
+  $("#btnPrint").click(function(){
+    var form = document.createElement("form");
+    $(form).attr("action", "<?php echo site_url('report/ctkStruk') ?>")
+            .attr("method", "post")
+            .attr("target", "_blank");
+    $(form).html('<input type="hidden" name="id_penjualan" value="" />');
+    document.body.appendChild(form);
+    $(form).submit();
+    document.body.removeChild(form);
+  })
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){
     var number_string = angka.replace(/[^,\d]/g, '').toString(),
