@@ -134,7 +134,7 @@ class Penjualan extends CI_Controller {
       $this->db->insert('tb_dtl_penjualan', $dataDtl);
     }
     
-    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id);
     echo json_encode($output);
   }
 }

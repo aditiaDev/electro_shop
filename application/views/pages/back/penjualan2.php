@@ -157,6 +157,33 @@
     </div>
   <!-- Modal Pelanggan -->
 
+  <!-- Modal Cetak -->
+  <div class="modal fade" id="modal_cetak"  role="dialog"  aria-hidden="true">
+      <div class="modal-dialog" role="document" style="width:700px">
+        <!-- <form id="form_item"> -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title">Pilih Pelanggan</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <input type="text" class="form-control" name="no_nota" placeholder="No NOTA">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button class="btn btn-primary" id="okPrint">OK</button>
+            </div>
+          </div>
+        <!-- </form> -->
+      </div>
+    </div>
+  <!-- Modal Cetak -->
+
 </div> 
 
 <script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery-2.1.4.min.js"></script>
@@ -328,6 +355,11 @@
       return
     }
 
+    if($("[name='bayar']").val() == ""){
+      alert("Input Uang Pembayaran")
+      return
+    }
+
     let tot_biaya_barang = $("#total_text").text().split('.').join('');
     let tot_akhir = $("#order_text").text().split('.').join('');
     let frmData = $("#FRM_DATA").serialize()
@@ -348,9 +380,10 @@
         // console.log(data)
         if (data.status == "success") {
           toastr.info(data.message)
-          // setTimeout(() => {
-          //   location.reload();
-          // }, 500);
+          
+          setTimeout(() => {
+            cetak(data.id)
+          }, 1000);
           
         }else{
           toastr.error(data.message)
@@ -359,16 +392,42 @@
     })
   })
 
+  function afterSave(){
+    $("[name='qty[]']").attr('disabled',true)
+    $("[name='diskon[]']").attr('disabled',true)
+    $("#BTN_PELANGGAN").attr('disabled',true)
+    $("[name='diskon_header']").attr('disabled',true)
+    $("[name='bayar']").attr('disabled',true)
+    $("#btnPay").attr('disabled',true)
+  }
+
   $("#btnPrint").click(function(){
+    event.preventDefault()
+    $("#modal_cetak").modal('show')
+  })
+
+  $("#okPrint").click(function(){
+    event.preventDefault()
+    if($("[name='no_nota']").val() == ""){
+      alert('Masukkan No Nota')
+      return
+    }
+
+    let id_penjualan = $("[name='no_nota']").val()
+    cetak(id_penjualan)
+  })
+
+  function cetak(id){
     var form = document.createElement("form");
     $(form).attr("action", "<?php echo site_url('report/ctkStruk') ?>")
             .attr("method", "post")
             .attr("target", "_blank");
-    $(form).html('<input type="hidden" name="id_penjualan" value="" />');
+    $(form).html('<input type="hidden" name="id_penjualan" value="'+id+'" />');
     document.body.appendChild(form);
     $(form).submit();
     document.body.removeChild(form);
-  })
+  }
+
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){
     var number_string = angka.replace(/[^,\d]/g, '').toString(),
