@@ -128,14 +128,40 @@
 			</ul>
 		</li>
 
-    <li class="<?= ($this->uri->segment(1) == 'usercomplaint') ? 'active open' : '' ?> hover">
-			<a href="<?php echo base_url("usercomplaint")?>">
+    <li class="<?= ($this->uri->segment(1) == 'complaint') ? 'active open' : '' ?> hover">
+			<a href="#" class="dropdown-toggle">
 				<i class="menu-icon fa fa-comments-o"></i>
-				<span class="menu-text"> Customer Complaint </span>
+				<span class="menu-text">
+					Complaint
+				</span>
+
+				<b class="arrow fa fa-angle-down"></b>
 			</a>
 
 			<b class="arrow"></b>
+
+			<ul class="submenu">
+
+				<li class="hover">
+					<a href="<?php echo base_url("complaint/usercomplaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+
+        <li class="hover">
+					<a href="<?php echo base_url("complaint/grafikcomplaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Grafik Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
 		</li>
+
 
     <!-- <li class="<?= ($this->uri->segment(1) == 'chart') ? 'active open' : '' ?> hover">
 			<a href="<?php echo base_url("chartPenjualan")?>">

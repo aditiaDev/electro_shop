@@ -66,3 +66,6 @@ $route['checkout'] = 'front/checkout';
 $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';
 
 $route['usercomplaintdtl/(:any)'] = 'usercomplaint/usercomplaintdtl/$1';
+
+$route['complaint/usercomplaint'] = 'usercomplaint';
+$route['complaint/grafikcomplaint'] = 'usercomplaint/grafikComplaint';

@@ -98,4 +98,29 @@ class Usercomplaint extends CI_Controller {
     echo json_encode($output);
 
   }
+
+  public function grafikComplaint(){
+    $this->load->view('template/back/header');
+    $this->load->view('template/back/topmenu');
+    $this->load->view('pages/back/grafikcomplaint');
+    $this->load->view('template/back/footer');
+  }
+
+  public function getDataGrafik(){
+    $year = date('Y');
+    $data['labels'] = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    $i=0;
+    foreach($data['labels'] as $month){
+      // print_r($month);
+      $jml = $this->db->query("
+        SELECT count(*) as jml FROM tb_complaint
+        WHERE YEAR(tgl_complaint) = '".$year."'
+        and DATE_FORMAT(tgl_complaint , '%b') = '".$month."'
+      ")->row()->jml;
+      $data['data']['quantity'][$i] = $jml;
+      $i++;
+    }
+    // $data['data']['quantity'] = [65, 59, 80, 81, 56, 55, 40];
+    echo json_encode($data);
+  }
 }
