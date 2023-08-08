@@ -89,6 +89,21 @@ class Penjualan extends CI_Controller {
     return $kode;
   }
 
+  public function generateIdBarangKeluar(){
+    $unik = 'K'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_barang_keluar) LAST_NO FROM tb_barang_keluar WHERE id_barang_keluar LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
   public function saveCheckout(){
     $this->load->library('form_validation');
 
@@ -132,6 +147,25 @@ class Penjualan extends CI_Controller {
       );
 
       $this->db->insert('tb_dtl_penjualan', $dataDtl);
+
+      $id_barang_keluar = $this->generateIdBarangKeluar();
+
+      $dataDtl2 = array(
+        "id_barang_keluar" => $id_barang_keluar,
+        "doc_referensi" => $id,
+        "doc_tipe" => "PENJUALAN",
+        "tgl_barang_keluar" => date('Y-m-d H:i:s'),
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga" => $this->input->post('harga')[$key],
+      );
+
+      $this->db->insert('tb_barang_keluar', $dataDtl2);
+
+      $this->db->query("
+        UPDATE tb_barang SET stock = ( stock - ".$this->input->post('qty')[$key]." ) 
+        WHERE id_barang = '".$this->input->post('id_barang')[$key]."'
+      ");
     }
     
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id);

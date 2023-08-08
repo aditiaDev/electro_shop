@@ -166,9 +166,9 @@
         REFRESH_DATA()
       })
 
-      $("#btnBatal").click(function()[
+      $("#btnBatal").click(function(){
         $("#modal_add").modal('hide')
-      ])
+      })
 
       $("#add_data").click(function(){
         $("#FRM_DATA")[0].reset()

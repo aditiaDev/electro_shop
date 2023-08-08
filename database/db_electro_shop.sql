@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 05 Agu 2023 pada 01.08
+-- Waktu pembuatan: 08 Agu 2023 pada 16.11
 -- Versi server: 10.4.10-MariaDB
 -- Versi PHP: 7.3.12
 
@@ -48,8 +48,8 @@ CREATE TABLE `tb_barang` (
 INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `berat_barang`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
 ('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 0.5, 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
 ('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 3, 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
-('B2300003', 'K00001', 'Mousepad', 15000, 'EA', 0.5, 20, '-', '1690690381510.png', 'Mousepad Murah'),
-('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 1, 10, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
+('B2300003', 'K00001', 'Mousepad', 17000, 'EA', 0.5, 30, '-', '1690690381510.png', 'Mousepad Murah'),
+('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 1, 8, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
 
 -- --------------------------------------------------------
 
@@ -61,13 +61,22 @@ CREATE TABLE `tb_barang_keluar` (
   `id_barang_keluar` varchar(15) NOT NULL,
   `id_barang` varchar(15) DEFAULT NULL,
   `doc_tipe` varchar(30) DEFAULT NULL,
-  `tgl_barang_keluar` date DEFAULT NULL,
+  `tgl_barang_keluar` datetime DEFAULT NULL,
   `ket_barang_keluar` varchar(255) DEFAULT NULL,
   `jumlah` float DEFAULT NULL,
   `harga` float DEFAULT NULL,
   `unit_pengukuran` varchar(10) DEFAULT NULL,
   `doc_referensi` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_barang_keluar`
+--
+
+INSERT INTO `tb_barang_keluar` (`id_barang_keluar`, `id_barang`, `doc_tipe`, `tgl_barang_keluar`, `ket_barang_keluar`, `jumlah`, `harga`, `unit_pengukuran`, `doc_referensi`) VALUES
+('K2300001', 'B2300003', 'PENJUALAN', '2023-08-08 20:00:00', 'a', 4, 15000, NULL, 'J2300005'),
+('K2300002', 'B2300002', 'PENJUALAN', '2023-08-08 20:00:00', NULL, 1, 8000000, NULL, 'J2300005'),
+('K2300003', 'B2300004', 'PENJUALAN', '2023-08-08 19:59:28', NULL, 2, 80000, NULL, 'J2300006');
 
 -- --------------------------------------------------------
 
@@ -83,8 +92,16 @@ CREATE TABLE `tb_barang_masuk` (
   `ket_barang_masuk` varchar(255) DEFAULT NULL,
   `jumlah` float DEFAULT NULL,
   `harga` float DEFAULT NULL,
-  `unit_pengukuran` varchar(10) DEFAULT NULL
+  `unit_pengukuran` varchar(10) DEFAULT NULL,
+  `doc_referensi` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data untuk tabel `tb_barang_masuk`
+--
+
+INSERT INTO `tb_barang_masuk` (`id_barang_masuk`, `id_barang`, `doc_tipe`, `tgl_barang_masuk`, `ket_barang_masuk`, `jumlah`, `harga`, `unit_pengukuran`, `doc_referensi`) VALUES
+('M2300001', 'B2300003', 'PEMBELIAN', '2023-08-08 20:49:42', 'Pembelian dari Ungu', 10, 17000, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -108,7 +125,11 @@ CREATE TABLE `tb_complaint` (
 --
 
 INSERT INTO `tb_complaint` (`id_complaint`, `id_penjualan`, `id_user`, `tgl_complaint`, `judul_complaint`, `deskripsi`, `foto`, `status`) VALUES
-('C2300001', 'J2300001', 'U2300003', '2023-08-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN');
+('C2300001', 'J2300001', 'U2300003', '2023-08-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
+('C2300002', 'J2300002', 'U2300003', '2023-07-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
+('C2300003', 'J2300003', 'U2300003', '2023-08-03', 'Barang Basah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
+('C2300004', 'J2300004', 'U2300003', '2023-06-03', 'Barang Beda', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
+('C2300005', 'J2300005', 'U2300003', '2023-08-05', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN');
 
 -- --------------------------------------------------------
 
@@ -136,7 +157,14 @@ INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`,
 (15, 'J2300001', 'B2300004', 2, 80000, 0, 160000),
 (16, 'J2300002', 'B2300004', 2, 80000, 0, 160000),
 (17, 'J2300002', 'B2300002', 1, 8000000, 10000, 7990000),
-(18, 'J2300002', 'B2300001', 1, 50000, 0, 50000);
+(18, 'J2300002', 'B2300001', 1, 50000, 0, 50000),
+(19, 'J2300003', 'B2300004', 1, 80000, 0, 80000),
+(20, 'J2300003', 'B2300001', 1, 50000, 0, 50000),
+(21, 'J2300004', 'B2300004', 1, 80000, 0, 80000),
+(22, 'J2300004', 'B2300003', 1, 15000, 0, 15000),
+(23, 'J2300005', 'B2300003', 4, 15000, 0, 60000),
+(24, 'J2300005', 'B2300002', 1, 8000000, 0, 8000000),
+(25, 'J2300006', 'B2300004', 2, 80000, 10000, 150000);
 
 -- --------------------------------------------------------
 
@@ -272,7 +300,11 @@ CREATE TABLE `tb_penjualan` (
 
 INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `tipe_penjualan`, `diskon`, `tot_biaya_barang`, `tot_akhir`, `status_penjualan`) VALUES
 ('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, 'DITERIMA'),
-('J2300002', '2023-08-05 05:42:43', 'GUEST', 'ONSITE', 0, 8200000, 8200000, 'SELESAI');
+('J2300002', '2023-08-05 05:42:43', 'GUEST', 'ONSITE', 0, 8200000, 8200000, 'SELESAI'),
+('J2300003', '2023-08-07 19:53:52', 'GUEST', 'ONSITE', 0, 130000, 130000, 'SELESAI'),
+('J2300004', '2023-08-07 19:59:51', 'GUEST', 'ONSITE', 0, 95000, 95000, 'SELESAI'),
+('J2300005', '2023-08-08 19:53:14', 'GUEST', 'ONSITE', 0, 8060000, 8060000, 'SELESAI'),
+('J2300006', '2023-08-08 19:59:28', 'GUEST', 'ONSITE', 0, 150000, 150000, 'SELESAI');
 
 -- --------------------------------------------------------
 
@@ -419,7 +451,7 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_pengiriman`

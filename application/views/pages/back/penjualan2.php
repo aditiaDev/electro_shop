@@ -380,7 +380,7 @@
         // console.log(data)
         if (data.status == "success") {
           toastr.info(data.message)
-          
+          afterSave()
           setTimeout(() => {
             cetak(data.id)
           }, 1000);

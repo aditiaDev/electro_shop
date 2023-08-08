@@ -125,6 +125,22 @@
 
 					<b class="arrow"></b>
 				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("transaksi/barangmasuk")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Barang Masuk
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("transaksi/barangkeluar")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Barang Keluar
+					</a>
+
+					<b class="arrow"></b>
+				</li>
 			</ul>
 		</li>
 
@@ -162,15 +178,31 @@
 			</ul>
 		</li>
 
+    <li class="<?= ($this->uri->segment(1) == 'laporan') ? 'active open' : '' ?> hover">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-book"></i>
+				<span class="menu-text">
+					Laporan
+				</span>
 
-    <!-- <li class="<?= ($this->uri->segment(1) == 'chart') ? 'active open' : '' ?> hover">
-			<a href="<?php echo base_url("chartPenjualan")?>">
-				<i class="menu-icon fa fa-bar-chart"></i>
-				<span class="menu-text"> Grafik Penjualan </span>
+				<b class="arrow fa fa-angle-down"></b>
 			</a>
 
 			<b class="arrow"></b>
-		</li> -->
+
+			<ul class="submenu">
+
+				<li class="hover">
+					<a href="<?php echo base_url("laporan/penjualan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Laporan Penjualan
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+
 
 	</ul><!-- /.nav-list -->
 </div>
