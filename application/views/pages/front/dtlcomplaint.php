@@ -250,7 +250,8 @@
             if (data.status == "success") {
               toastr.info(data.message)
               setTimeout(() => {
-                location.reload();
+                // location.reload();
+                window.location.reload(true);
               }, 500);
               
 
