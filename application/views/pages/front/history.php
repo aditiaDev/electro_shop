@@ -83,9 +83,39 @@
             { "data": "jumlah", className: "text-right"},
             { "data": "harga", className: "text-right"},
             { "data": "subtotal", className: "text-right"},
-            { "data": "status_penjualan", className: "text-center" },
+            { "data": null, 
+              "render" : function(data){
+                if(data.status_penjualan == "DIKIRIM"){
+                  return "<button class='btn btn-sm btn-warning' title='Hapus Data' onclick='changeStatus(\""+data.id_penjualan+"\", \"SELESAI\");'>Pesanan Diterima </button>"
+                }else{
+                  return data.status_penjualan
+                }
+                
+              },
+            },
         ]
       }
     )
+  }
+
+  function changeStatus(id_penjualan, status){
+    $.ajax({
+      url: "<?php echo site_url('penjualan/changeStatus') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: {
+        id_penjualan,
+        status
+      },
+      success: function(data){
+        if (data.status == "success") {
+          toastr.info(data.message)
+          REFRESH_DATA()
+
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
   }
 </script>

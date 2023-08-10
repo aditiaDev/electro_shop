@@ -301,6 +301,7 @@
       $("[name='ket_barang']").val(data.ket_barang)
       $("[name='merk']").val(data.merk)
       $("[name='unit_pengukuran']").val(data.unit_pengukuran)
+      $("[name='berat_barang']").val(data.berat_barang)
 
       $("#modal_add").modal('show')
     }

@@ -88,8 +88,6 @@
                   return "<button class='btn btn-sm btn-warning' title='Hapus Data' onclick='changeStatus(\""+data.id_penjualan+"\", \"DISIAPKAN\");'>Proses </button>"
                 }else if(data.status_penjualan == "DISIAPKAN"){
                   return "<button class='btn btn-sm btn-warning' title='Hapus Data' onclick='changeStatus(\""+data.id_penjualan+"\", \"DIKIRIM\");'>Kirim </button>"
-                }else if(data.status_penjualan == "DIKIRIM"){
-                  return "<button class='btn btn-sm btn-warning' title='Hapus Data' onclick='changeStatus(\""+data.id_penjualan+"\", \"SELESAI\");'>Selesai </button>"
                 }else{
                   return data.status_penjualan
                 }
