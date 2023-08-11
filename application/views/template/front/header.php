@@ -27,6 +27,7 @@
 
  		<!-- Custom stlylesheet -->
  		<link type="text/css" rel="stylesheet" href="<?php echo base_url(); ?>assets/template/front/css/style.css"/>
+     <link rel="stylesheet" href="<?php echo base_url('/assets/css/loader.css'); ?>">
     
 
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -54,6 +55,9 @@
         </style>
     </head>
 	<body>
+  <div class="before-loader" id="LOADER" style="display: none;">
+        	<div class="loader5" ></div>
+     	</div>
 		<!-- HEADER -->
 		<header>
 			<!-- TOP HEADER -->

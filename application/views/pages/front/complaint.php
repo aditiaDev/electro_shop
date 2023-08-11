@@ -169,7 +169,16 @@
             { "data": "id_penjualan", className: "text-center" },
             { "data": "tgl_complaint"},
             { "data": "judul_complaint"},
-            { "data": "status"},
+            // { "data": "status"},
+            { "data": null, 
+              "render" : function(data){
+                if(data.status == "OPEN"){
+                  return data.status+"</br><button class='btn btn-sm btn-info' onclick='closeStatus(\""+data.id_complaint+"\")'>Close Complaint</button>"
+                }else{
+                  return data.status
+                }
+              },
+            },
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
@@ -288,6 +297,26 @@
             toastr.error(data.message)
           }
         }
+    })
+  }
+
+  function closeStatus(id_complaint){
+    $.ajax({
+      url: "<?php echo site_url('usercomplaint/changeStatus') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: {
+        id_complaint
+      },
+      success: function(data){
+        if (data.status == "success") {
+          toastr.info(data.message)
+          REFRESH_DATA()
+
+        }else{
+          toastr.error(data.message)
+        }
+      }
     })
   }
 </script>

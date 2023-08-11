@@ -180,7 +180,7 @@ class Front extends CI_Controller {
               "diskon" => 0,
               "tot_biaya_barang" => 0,
               "tot_akhir" => 0,
-              "status_penjualan" => "DISIAPKAN"
+              "status_penjualan" => "MENUNGGU PEMBAYARAN"
             );
     $this->db->insert('tb_penjualan', $data);
 

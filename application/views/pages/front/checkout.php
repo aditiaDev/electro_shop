@@ -47,7 +47,13 @@
               </div>
               <div class="form-group">
                 <label>Kota Asal</label>
-                <select class="form-control select2" name="kota_asal" required onChange="cekOngkir()">
+                <select class="form-control" name="kota_asal" required onChange="cekOngkir()">
+                  <option value="344">Pati</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Provinsi Tujuan</label>
+                <select class="form-control select2" name="provinsi_tujuan" required onChange="showKotaTujuan()">
                   <option value="">Pilih</option>
                 </select>
               </div>
@@ -148,7 +154,9 @@
 ?>
 <script src="<?php echo base_url(); ?>assets/template/front/js/jquery.min.js"></script>
 <script>
-  getKota()
+  // getKota()
+  getProvinsi()
+
   function deleteRow(id_barang){
     $.ajax({
 			url: "<?php echo base_url('front/deleteKeranjang') ?>",
@@ -164,6 +172,22 @@
     total()
   }
 
+  function getProvinsi(){
+    $.ajax({
+      url: "<?php echo base_url('ongkir/getProvinsi') ?>",
+      type: "POST",
+      dataType: "JSON",
+      success: function(data){
+        // console.log(data['rajaongkir']['results'])
+        $.map(data.rajaongkir.results, function (item) {
+          // console.log(item)
+          let isine = "<option value='"+item.province_id+"'>"+item.province+"</option>"
+          $("[name='provinsi_tujuan']").append(isine)
+        })
+      }
+    })
+  }
+
   function getKota(){
     $.ajax({
       url: "<?php echo base_url('ongkir/getKota') ?>",
@@ -174,7 +198,6 @@
         $.map(data.rajaongkir.results, function (item) {
           // console.log(item)
           let isine = "<option value='"+item.city_id+"'>"+item.city_name+"</option>"
-          $("[name='kota_asal']").append(isine)
           $("[name='kota_tujuan']").append(isine)
         })
       }
@@ -205,6 +228,34 @@
           let isine = "<option value='"+item['cost'][0]['value']+"' estimasi='"+item['cost'][0]['etd']+"'>"+item.service+"</option>"
           $("[name='layanan']").append(isine)
         })
+      }
+    })
+  }
+
+  function showKotaTujuan(){
+    $("[name='kota_tujuan']").val('')
+    $("[name='kurir']").val('')
+    $("[name='layanan']").val('')
+    $("[name='harga_kirim']").val('')
+    $("[name='estimasi']").val('')
+
+    let isine='<option>Pilih</option>'
+
+    $.ajax({
+      url: "<?php echo base_url('ongkir/getKotaByProvinsi') ?>",
+      type: "POST",
+      data: {
+        provinsi_id: $("[name='provinsi_tujuan']").val()
+      },
+      dataType: "JSON",
+      success: function(data){
+        // console.log(data['rajaongkir']['results'])
+        $.map(data.rajaongkir.results, function (item) {
+          // console.log(item)
+          isine += "<option value='"+item.city_id+"'>"+item.city_name+" - Kode Pos: "+item.postal_code+"</option>"
+          
+        })
+        $("[name='kota_tujuan']").html(isine)
       }
     })
   }

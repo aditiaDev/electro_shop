@@ -38,7 +38,7 @@ class Penjualan extends CI_Controller {
       B.jumlah,
       B.harga,
       (B.jumlah * B.harga) AS SUB_TOTAL,
-      A.id_pelanggan, D.nm_pelanggan, A.status_penjualan
+      A.id_pelanggan, D.nm_pelanggan, A.status_penjualan, A.bukti_bayar
       FROM tb_penjualan A
       LEFT JOIN tb_dtl_penjualan B ON A.id_penjualan = B.id_penjualan
       LEFT JOIN tb_barang C ON B.id_barang = C.id_barang

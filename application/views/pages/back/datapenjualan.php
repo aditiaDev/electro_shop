@@ -32,6 +32,7 @@
                       <th>Jumlah</th>
                       <th>Harga</th>
                       <th>Total</th>
+                      <th>Bukti</br>Bayar</th>
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -57,7 +58,7 @@
   function REFRESH_DATA(){
     $('#tb_data').DataTable().destroy();
     var tb_data =  $("#tb_data").DataTable({
-        "order": [[ 0, "asc" ]],
+        "order": [[ 0, "desc" ]],
         "pageLength": 25,
         "autoWidth": false,
         "responsive": true,
@@ -82,6 +83,16 @@
             { "data": "jumlah"},
             { "data": "harga"},
             { "data": "SUB_TOTAL"},
+            { "data": null, 
+              "render" : function(data){
+                if(data.tipe_penjualan == "ONLINE" && data.bukti_bayar != ""){
+                  return "<a target='_blank' href='<?php echo base_url() ?>assets/images/bukti_bayar/"+data.bukti_bayar+"'><img  style='max-width: 120px;' class='img-fluid' src='<?php echo base_url() ?>assets/images/bukti_bayar/"+data.bukti_bayar+"' ></a>"
+                }else{
+                  return ""
+                }
+                
+              },
+            },
             { "data": null, 
               "render" : function(data){
                 if(data.status_penjualan == "DITERIMA"){

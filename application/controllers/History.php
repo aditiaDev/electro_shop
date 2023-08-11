@@ -38,4 +38,54 @@ class History extends CI_Controller {
     echo json_encode($data);
   }
 
+  private function _do_upload(){
+		$config['upload_path']          = 'assets/images/bukti_bayar/';
+    $config['allowed_types']        = 'gif|jpg|jpeg|png';
+    $config['max_size']             = 5000; //set max size allowed in Kilobyte
+    $config['max_width']            = 4000; // set max width image allowed
+    $config['max_height']           = 4000; // set max height allowed
+    $config['file_name']            = round(microtime(true) * 1000); //just milisecond timestamp fot unique name
+
+    $this->load->library('upload', $config);
+
+    if(!$this->upload->do_upload('foto')) //upload and validate
+    {
+      $data['inputerror'] = 'foto';
+			$data['message'] = 'Upload error: '.$this->upload->display_errors('',''); //show ajax error
+			$data['status'] = FALSE;
+			echo json_encode($data);
+			exit();
+		}
+		return $this->upload->data('file_name');
+	}
+
+  public function uploadBuktiBayar($id_penjualan){
+    $data = array(
+            "status_penjualan" => "DITERIMA",
+          );
+
+    if(!empty($_FILES['foto']['name'])){
+      $upload = $this->_do_upload();
+      $data['bukti_bayar'] = $upload;
+    }
+
+    $this->db->where('id_penjualan', $id_penjualan);
+    $this->db->update('tb_penjualan', $data);
+    if($this->db->error()['message'] != ""){
+      $output = array("status" => "error", "message" => $this->db->error()['message']);
+      echo json_encode($output);
+      return false;
+    }
+    $output = array("status" => "success", "message" => "Bukti Pembayran telah terupload");
+    echo json_encode($output);
+  }
+
+  public function batalPesan(){
+    $this->db->where('id_penjualan', $this->input->post('id_penjualan'));
+    $this->db->delete('tb_penjualan');
+
+    $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
+    echo json_encode($output);
+  }
+
 }

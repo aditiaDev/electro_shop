@@ -96,10 +96,12 @@ class Complaint extends CI_Controller {
 
   }
 
-  public function updateData(){
+  public function updateData($id_complaint){
 
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('nm_kategori', 'Nama kategori', 'required');
+    $this->form_validation->set_rules('id_penjualan', 'No Pembelian', 'required');
+    $this->form_validation->set_rules('judul_complaint', 'judul_complaint', 'required');
+    $this->form_validation->set_rules('deskripsi', 'Deskripsi Complaint', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -109,10 +111,18 @@ class Complaint extends CI_Controller {
     }
 
     $data = array(
-      "nm_kategori" => $this->input->post('nm_kategori'),
-    );
-    $this->db->where('id_kategori', $this->input->post('id_kategori'));
-    $this->db->update('tb_kategori_barang', $data);
+          "id_penjualan" => $this->input->post('id_penjualan'),
+          "judul_complaint" => $this->input->post('judul_complaint'),
+          "deskripsi" => $this->input->post('deskripsi'),
+        );
+
+    if(!empty($_FILES['foto']['name'])){
+    $upload = $this->_do_upload();
+    $data['foto'] = $upload;
+    }
+
+    $this->db->where('id_complaint', $id_complaint);
+    $this->db->update('tb_complaint', $data);
     if($this->db->error()['message'] != ""){
       $output = array("status" => "error", "message" => $this->db->error()['message']);
       echo json_encode($output);

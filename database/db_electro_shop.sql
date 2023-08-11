@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 08 Agu 2023 pada 16.11
+-- Waktu pembuatan: 11 Agu 2023 pada 17.02
 -- Versi server: 10.4.10-MariaDB
 -- Versi PHP: 7.3.12
 
@@ -46,10 +46,10 @@ CREATE TABLE `tb_barang` (
 --
 
 INSERT INTO `tb_barang` (`id_barang`, `id_kategori`, `nm_barang`, `harga`, `unit_pengukuran`, `berat_barang`, `stock`, `merk`, `foto_barang`, `ket_barang`) VALUES
-('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 0.5, 35, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
-('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 3, 5, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
+('B2300001', 'K00004', 'Mouse', 50000, 'PCS', 0.5, 34, 'Logitech', 'mouse.png', 'Mouse Logitech Wireless'),
+('B2300002', 'K00002', 'Monitor IPS LED Full HD 22\"', 8000000, 'EA', 3, 4, 'LG', '1690555956812.png', 'Layar IPS FHD 22\"(1920 x 1080)\r\nTeknologi Radeon FreeSync™\r\n3 Side Virtually Borderless Design\r\nOn Screen Control\r\nDual HDMI\r\nHemat Listrik Cerdas'),
 ('B2300003', 'K00001', 'Mousepad', 17000, 'EA', 0.5, 30, '-', '1690690381510.png', 'Mousepad Murah'),
-('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 80000, 'EA', 1, 8, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
+('B2300004', 'K00006', 'Keyboard Logitect USB Kabel K120', 500000, 'EA', 1, 8, 'Logitect', '1690690618727.png', 'Keyboard Logitect USB Kabel K120');
 
 -- --------------------------------------------------------
 
@@ -76,7 +76,10 @@ CREATE TABLE `tb_barang_keluar` (
 INSERT INTO `tb_barang_keluar` (`id_barang_keluar`, `id_barang`, `doc_tipe`, `tgl_barang_keluar`, `ket_barang_keluar`, `jumlah`, `harga`, `unit_pengukuran`, `doc_referensi`) VALUES
 ('K2300001', 'B2300003', 'PENJUALAN', '2023-08-08 20:00:00', 'a', 4, 15000, NULL, 'J2300005'),
 ('K2300002', 'B2300002', 'PENJUALAN', '2023-08-08 20:00:00', NULL, 1, 8000000, NULL, 'J2300005'),
-('K2300003', 'B2300004', 'PENJUALAN', '2023-08-08 19:59:28', NULL, 2, 80000, NULL, 'J2300006');
+('K2300003', 'B2300004', 'PENJUALAN', '2023-08-08 19:59:28', NULL, 2, 80000, NULL, 'J2300006'),
+('K2300004', 'B2300004', 'PENJUALAN', '2023-08-09 21:19:24', NULL, 2, 80000, NULL, 'J2300007'),
+('K2300005', 'B2300001', 'PENJUALAN', '2023-08-09 21:19:24', NULL, 1, 50000, NULL, 'J2300007'),
+('K2300006', 'B2300002', 'PENJUALAN', '2023-08-09 21:19:24', NULL, 1, 8000000, NULL, 'J2300007');
 
 -- --------------------------------------------------------
 
@@ -101,7 +104,8 @@ CREATE TABLE `tb_barang_masuk` (
 --
 
 INSERT INTO `tb_barang_masuk` (`id_barang_masuk`, `id_barang`, `doc_tipe`, `tgl_barang_masuk`, `ket_barang_masuk`, `jumlah`, `harga`, `unit_pengukuran`, `doc_referensi`) VALUES
-('M2300001', 'B2300003', 'PEMBELIAN', '2023-08-08 20:49:42', 'Pembelian dari Ungu', 10, 17000, NULL, NULL);
+('M2300001', 'B2300003', 'PEMBELIAN', '2023-08-08 20:49:42', 'Pembelian dari Ungu', 10, 17000, NULL, NULL),
+('M2300002', 'B2300004', 'PEMBELIAN', '2023-08-09 21:23:28', 'Test', 2, 500000, NULL, 'INV-010102023');
 
 -- --------------------------------------------------------
 
@@ -125,11 +129,11 @@ CREATE TABLE `tb_complaint` (
 --
 
 INSERT INTO `tb_complaint` (`id_complaint`, `id_penjualan`, `id_user`, `tgl_complaint`, `judul_complaint`, `deskripsi`, `foto`, `status`) VALUES
-('C2300001', 'J2300001', 'U2300003', '2023-08-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
+('C2300001', 'J2300001', 'U2300003', '2023-08-03', 'Barang Pecah', 'Barang Pecah saat pengantaran2', '1691048039584.png', 'OPEN'),
 ('C2300002', 'J2300002', 'U2300003', '2023-07-03', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
 ('C2300003', 'J2300003', 'U2300003', '2023-08-03', 'Barang Basah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
 ('C2300004', 'J2300004', 'U2300003', '2023-06-03', 'Barang Beda', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN'),
-('C2300005', 'J2300005', 'U2300003', '2023-08-05', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'OPEN');
+('C2300005', 'J2300005', 'U2300003', '2023-08-05', 'Barang Pecah', 'Barang Pecah saat pengantaran', '1691048039584.png', 'CLOSED');
 
 -- --------------------------------------------------------
 
@@ -164,7 +168,15 @@ INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`,
 (22, 'J2300004', 'B2300003', 1, 15000, 0, 15000),
 (23, 'J2300005', 'B2300003', 4, 15000, 0, 60000),
 (24, 'J2300005', 'B2300002', 1, 8000000, 0, 8000000),
-(25, 'J2300006', 'B2300004', 2, 80000, 10000, 150000);
+(25, 'J2300006', 'B2300004', 2, 80000, 10000, 150000),
+(26, 'J2300007', 'B2300004', 2, 80000, 5000, 155000),
+(27, 'J2300007', 'B2300001', 1, 50000, 0, 50000),
+(28, 'J2300007', 'B2300002', 1, 8000000, 0, 8000000),
+(29, 'J2300008', 'B2300001', 1, 50000, 0, 50000),
+(30, 'J2300008', 'B2300003', 1, 17000, 0, 17000),
+(31, 'J2300009', 'B2300001', 1, 50000, 0, 50000),
+(32, 'J2300009', 'B2300004', 1, 500000, 0, 500000),
+(33, 'J2300010', 'B2300001', 1, 50000, 0, 50000);
 
 -- --------------------------------------------------------
 
@@ -188,7 +200,14 @@ INSERT INTO `tb_jawab_complaint` (`id_complaint`, `tgl_jawab`, `deskripsi`, `ole
 ('C2300001', '2023-08-03 17:57:36', 'Ada yang bisa kami bantu?', 'ADMIN', 'U2300001'),
 ('C2300001', '2023-08-03 18:00:36', 'Saya ingin komplain perihal barang saya yg rusak waktu pengiriman', 'PELANGGAN', 'U2300003'),
 ('C2300001', '2023-08-03 19:37:10', 'Oke', 'PELANGGAN', 'U2300003'),
-('C2300001', '2023-08-03 21:36:42', 'Mantabs', 'ADMIN', 'SU');
+('C2300001', '2023-08-03 21:36:42', 'Mantabs', 'ADMIN', 'SU'),
+('C2300006', '2023-08-09 21:33:20', 'Test', 'ADMIN', 'SU'),
+('C2300006', '2023-08-09 21:34:19', 'Ada yg bisa kami bantu?', 'ADMIN', 'SU'),
+('C2300006', '2023-08-09 21:35:08', 'Barang saya basah, saya minta diganti', 'PELANGGAN', 'U2300003'),
+('C2300006', '2023-08-09 21:40:18', 'test lagi', 'PELANGGAN', 'U2300003'),
+('C2300006', '2023-08-09 21:40:48', 'sadad', 'PELANGGAN', 'U2300003'),
+('C2300005', '2023-08-09 21:41:03', 'asda', 'PELANGGAN', 'U2300003'),
+('C2300004', '2023-08-09 21:42:26', 'dsfdsf', 'PELANGGAN', 'U2300003');
 
 -- --------------------------------------------------------
 
@@ -235,7 +254,9 @@ CREATE TABLE `tb_pelanggan` (
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `id_user`, `no_pelanggan`, `nm_pelanggan`, `alamat`, `tgl_register`) VALUES
 ('GUEST', 'GUEST', NULL, 'Non Member', 'Non Member', '2020-01-01'),
 ('P2300001', 'U2300003', '08567543557', 'Pelanggan Pertama Kita', 'Kudus Desa di Kudus', '2020-11-18'),
-('P2300002', 'U2300005', '08976378234', 'Pelanggan 3', 'Pati', '2023-08-01');
+('P2300002', 'U2300005', '08976378234', 'Pelanggan 3', 'Pati', '2023-08-01'),
+('P2300003', 'U2300006', '0897788824', 'PELANGGAN1', 'KUDUS', '2023-08-09'),
+('P2300004', 'U2300007', '08956677886', 'PELANGGAN4', 'PATI', '2023-08-09');
 
 -- --------------------------------------------------------
 
@@ -275,7 +296,10 @@ CREATE TABLE `tb_pengiriman` (
 --
 
 INSERT INTO `tb_pengiriman` (`id_pengiriman`, `id_penjualan`, `nm_penerima`, `kota_asal`, `kota_tujuan`, `kurir`, `harga`, `estimasi`, `layanan`, `alamat_penerima`) VALUES
-(7, 'J2300001', 'Test penerima', '209', '398', 'jne', 11000, '3-6', '11000', 'Test Alamat');
+(7, 'J2300001', 'Test penerima', '209', '398', 'jne', 11000, '3-6', '11000', 'Test Alamat'),
+(8, 'J2300008', 'Saya', '398', '209', 'jne', 10000, '3-6', '10000', 'DS. test Rt1/3'),
+(9, 'J2300009', 'Saya yg Nerima', '344', '80', 'tiki', 10000, '5', '10000', 'DS. Test RT 1 RW 3'),
+(10, 'J2300010', 'Saya yg Nerima', '344', '41', 'jne', 13000, '3-6', '13000', 'fcgfdgfdg');
 
 -- --------------------------------------------------------
 
@@ -291,20 +315,24 @@ CREATE TABLE `tb_penjualan` (
   `diskon` float NOT NULL,
   `tot_biaya_barang` float DEFAULT NULL,
   `tot_akhir` float DEFAULT NULL,
-  `status_penjualan` enum('DIKIRIM','SELESAI','DISIAPKAN','DITERIMA') DEFAULT NULL
+  `bukti_bayar` varchar(500) NOT NULL,
+  `status_penjualan` enum('DIKIRIM','SELESAI','DISIAPKAN','DITERIMA','MENUNGGU PEMBAYARAN','') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data untuk tabel `tb_penjualan`
 --
 
-INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `tipe_penjualan`, `diskon`, `tot_biaya_barang`, `tot_akhir`, `status_penjualan`) VALUES
-('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, 'DITERIMA'),
-('J2300002', '2023-08-05 05:42:43', 'GUEST', 'ONSITE', 0, 8200000, 8200000, 'SELESAI'),
-('J2300003', '2023-08-07 19:53:52', 'GUEST', 'ONSITE', 0, 130000, 130000, 'SELESAI'),
-('J2300004', '2023-08-07 19:59:51', 'GUEST', 'ONSITE', 0, 95000, 95000, 'SELESAI'),
-('J2300005', '2023-08-08 19:53:14', 'GUEST', 'ONSITE', 0, 8060000, 8060000, 'SELESAI'),
-('J2300006', '2023-08-08 19:59:28', 'GUEST', 'ONSITE', 0, 150000, 150000, 'SELESAI');
+INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `tipe_penjualan`, `diskon`, `tot_biaya_barang`, `tot_akhir`, `bukti_bayar`, `status_penjualan`) VALUES
+('J2300001', '2023-08-03 06:02:46', 'P2300001', 'ONLINE', 0, 8175000, 8186000, '', 'DISIAPKAN'),
+('J2300002', '2023-08-05 05:42:43', 'GUEST', 'ONSITE', 0, 8200000, 8200000, '', 'SELESAI'),
+('J2300003', '2023-08-07 19:53:52', 'GUEST', 'ONSITE', 0, 130000, 130000, '', 'SELESAI'),
+('J2300004', '2023-08-07 19:59:51', 'GUEST', 'ONSITE', 0, 95000, 95000, '', 'SELESAI'),
+('J2300005', '2023-08-08 19:53:14', 'GUEST', 'ONSITE', 0, 8060000, 8060000, '', 'SELESAI'),
+('J2300006', '2023-08-08 19:59:28', 'GUEST', 'ONSITE', 0, 150000, 150000, '', 'SELESAI'),
+('J2300007', '2023-08-09 21:19:24', 'GUEST', 'ONSITE', 5, 8205000, 7794750, '', 'SELESAI'),
+('J2300009', '2023-08-11 20:59:37', 'P2300001', 'ONLINE', 0, 550000, 560000, '1691764082755.png', 'DITERIMA'),
+('J2300010', '2023-08-11 21:56:03', 'P2300001', 'ONLINE', 0, 50000, 63000, '', 'MENUNGGU PEMBAYARAN');
 
 -- --------------------------------------------------------
 
@@ -335,11 +363,8 @@ CREATE TABLE `tb_unit_pengukuran` (
 --
 
 INSERT INTO `tb_unit_pengukuran` (`unit_pengukuran`, `deskripsi`) VALUES
-('EA', 'Each'),
 ('KG', 'Kilogram'),
-('L', 'Liter'),
-('PCS', 'Piece'),
-('TON', 'Ton');
+('PCS', 'Piece');
 
 -- --------------------------------------------------------
 
@@ -365,7 +390,9 @@ INSERT INTO `tb_user` (`id_user`, `nm_pengguna`, `username`, `password`, `level`
 ('U2300002', 'Pemilik', 'pemilik', 'pemilik', 'PEMILIK'),
 ('U2300003', 'Pelanggan 1', 'pelanggan', 'pelanggan', 'PELANGGAN'),
 ('U2300004', 'Pelanggan 2', 'pelanggan2', 'pelanggan2', 'PELANGGAN'),
-('U2300005', 'Pelanggan 3', 'pelanggan3', 'pelanggan3', 'PELANGGAN');
+('U2300005', 'Pelanggan 3', 'pelanggan3', 'pelanggan3', 'PELANGGAN'),
+('U2300006', 'PELANGGAN1', 'PELANGGAN1', 'PELANGGAN1', 'PELANGGAN'),
+('U2300007', 'PELANGGAN4', 'PELANGGAN4', 'PELANGGAN4', 'PELANGGAN');
 
 --
 -- Indexes for dumped tables
@@ -451,13 +478,13 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_pengiriman`
 --
 ALTER TABLE `tb_pengiriman`
-  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_pengiriman` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
