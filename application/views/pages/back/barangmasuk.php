@@ -232,7 +232,7 @@ var table_find_barang
   function REFRESH_DATA(){
     $('#tb_data').DataTable().destroy();
     var tb_data =  $("#tb_data").DataTable({
-        "order": [[ 0, "asc" ]],
+        "order": [[ 0, "desc" ]],
         "pageLength": 25,
         "autoWidth": false,
         "responsive": true,

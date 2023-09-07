@@ -58,6 +58,7 @@ $route['master/user'] = 'user';
 $route['master/kategori'] = 'kategori';
 $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
+$route['master/point'] = 'point';
 
 $route['transaksi/penjualan'] = 'penjualan';
 $route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';
@@ -71,3 +72,6 @@ $route['usercomplaintdtl/(:any)'] = 'usercomplaint/usercomplaintdtl/$1';
 
 $route['complaint/usercomplaint'] = 'usercomplaint';
 $route['complaint/grafikcomplaint'] = 'usercomplaint/grafikComplaint';
+
+$route['laporan/penjualan'] = 'report/penjualan';
+$route['laporan/complaint'] = 'report/complaint';

@@ -114,6 +114,7 @@ class Pelanggan extends CI_Controller {
               "no_pelanggan" => $this->input->post('no_pelanggan'),
               "alamat" => $this->input->post('alamat'),
               "tgl_register" => date('Y-m-d'),
+              "jml_point" => 0,
             );
     $this->db->insert('tb_pelanggan', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
@@ -165,5 +166,20 @@ class Pelanggan extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function minPoint(){
+    $min_point = $this->db->query("
+      SELECT MAX(min_point) min_point FROM tb_sys_point
+    ")->row()->min_point;
+
+    echo $min_point;
+  }
+
+  public function getPointPelanggan(){
+    $jml_point = $this->db->query("
+      SELECT jml_point FROM tb_pelanggan WHERE id_user = '".$this->session->userdata('id_user')."'
+    ")->row()->jml_point;
+
+    echo $jml_point;
+  }
   
 }

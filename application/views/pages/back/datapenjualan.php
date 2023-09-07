@@ -6,7 +6,7 @@
 				<div class="col-md-12">
           <div class="widget-box">
             <div class="widget-header">
-              <h4 class="widget-title">Data Kategori Barang</h4>
+              <h4 class="widget-title">Data Penjualan</h4>
 
               <div class="widget-toolbar">
                 <a href="#" data-action="collapse">

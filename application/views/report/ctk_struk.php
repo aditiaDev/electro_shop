@@ -38,7 +38,6 @@
           <th>Item</th>
           <th>Qty</th>
           <th>Harga</th>
-          <th>Diskon</th>
           <th>Sub Total</th>
         </tr>
       </thead>
@@ -52,22 +51,21 @@
           <td><?= $row['id_barang']."</br>".$row['nm_barang']; ?></td>
           <td style="text-align:right;"><?= $row['jumlah']; ?></td>
           <td style="text-align:right;"><?= $row['harga']; ?></td>
-          <td style="text-align:right;"><?= $row['diskon_item']; ?></td>
           <td style="text-align:right;"><?= $row['subtotal']; ?></td>
         </tr>
         <?php endforeach; ?>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="5" style="text-align:center;">Total</td>
+          <td colspan="4" style="text-align:center;">Total</td>
           <td style="text-align:right;"><?= number_format($data[0]['tot_biaya_barang'],0,',','.'); ?></td>
         </tr>
         <tr>
-          <td colspan="5" style="text-align:center;">Diskon (%)</td>
-          <td style="text-align:right;"><?= $data[0]['diskon']; ?></td>
+          <td colspan="4" style="text-align:center;">Penggunaan Point</td>
+          <td style="text-align:right;"><?= number_format($data[0]['point_pengurangan'],0,',','.'); ?></td>
         </tr>
         <tr>
-          <td colspan="5" style="text-align:center;font-weight:bold;">Total Pembayaran</td>
+          <td colspan="4" style="text-align:center;font-weight:bold;">Total Pembayaran</td>
           <td style="text-align:right;;font-weight:bold;">Rp. <?= number_format($data[0]['tot_akhir'],0,',','.'); ?></td>
         </tr>
       </tfoot>

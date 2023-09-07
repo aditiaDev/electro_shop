@@ -50,8 +50,8 @@ class Barangmasuk extends CI_Controller {
 
     $this->form_validation->set_rules('id_barang', 'id_barang', 'required');
     $this->form_validation->set_rules('doc_tipe', 'doc_tipe', 'required');
-    $this->form_validation->set_rules('jumlah', 'id_barang', 'required');
-    $this->form_validation->set_rules('harga', 'id_barang', 'required');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'required|numeric');
+    $this->form_validation->set_rules('harga', 'Harga', 'required|numeric');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -88,7 +88,10 @@ class Barangmasuk extends CI_Controller {
   public function updateData(){
 
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('nm_kategori', 'Nama kategori', 'required');
+    $this->form_validation->set_rules('id_barang', 'id_barang', 'required');
+    $this->form_validation->set_rules('doc_tipe', 'doc_tipe', 'required');
+    $this->form_validation->set_rules('jumlah', 'Jumlah', 'required|numeric');
+    $this->form_validation->set_rules('harga', 'Harga', 'required|numeric');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -98,10 +101,16 @@ class Barangmasuk extends CI_Controller {
     }
 
     $data = array(
-      "nm_kategori" => $this->input->post('nm_kategori'),
+      "id_barang" => $this->input->post('id_barang'),
+      "doc_tipe" => $this->input->post('doc_tipe'),
+      "tgl_barang_masuk" => date('Y-m-d H:i:s'),
+      "ket_barang_masuk" => $this->input->post('ket_barang_masuk'),
+      "jumlah" => $this->input->post('jumlah'),
+      "harga" => $this->input->post('harga'),
+      "doc_referensi" => $this->input->post('doc_referensi'),
     );
-    $this->db->where('id_kategori', $this->input->post('id_kategori'));
-    $this->db->update('tb_kategori_barang', $data);
+    $this->db->where('id_barang_masuk', $this->input->post('id_barang_masuk'));
+    $this->db->update('tb_barang_masuk', $data);
     if($this->db->error()['message'] != ""){
       $output = array("status" => "error", "message" => $this->db->error()['message']);
       echo json_encode($output);

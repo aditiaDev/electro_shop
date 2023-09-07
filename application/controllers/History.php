@@ -20,6 +20,10 @@ class History extends CI_Controller {
 	}
 
   public function getDataByUser(){
+    $id_pelanggan = $this->db->query(
+      "SELECT id_pelanggan FROM tb_pelanggan WHERE id_user='".$this->session->userdata('id_user')."'"
+    )->row()->id_pelanggan;
+
     $data['data'] = $this->db->query("
       SELECT 
       A.id_penjualan,
@@ -33,7 +37,7 @@ class History extends CI_Controller {
       FROM tb_penjualan A
       LEFT JOIN tb_dtl_penjualan B ON A.id_penjualan = B.id_penjualan
       LEFT JOIN tb_barang C ON B.id_barang = C.id_barang
-      WHERE A.id_pelanggan = 'P2300001'
+      WHERE A.id_pelanggan = '".$id_pelanggan."'
     ")->result();
     echo json_encode($data);
   }

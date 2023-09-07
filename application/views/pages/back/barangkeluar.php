@@ -145,6 +145,8 @@
                         <thead>
                             <th>ID Barang</th>
                             <th>Nama barang</th>
+                            <th>Stock</th>
+                            <th>Harga</th>
                         </thead>
                         <tbody>
                             <tr>
@@ -187,6 +189,7 @@ var table_find_barang
             },
             "columns": [
                 { "data": "id_barang" },{ "data": "nm_barang" }
+                ,{ "data": "stock" },{ "data": "harga" }
             ]
         });
 
@@ -197,8 +200,10 @@ var table_find_barang
         let Rowdata = table_find_barang.row( this ).data();
         let id_barang = Rowdata.id_barang;
         let nm_barang = Rowdata.nm_barang;
+        let harga = Rowdata.harga;
 
         $("[name='id_barang']").val(id_barang);
+        $("[name='harga']").val(harga);
 
         $('#tb_select_barang').DataTable().destroy();
         
@@ -231,7 +236,7 @@ var table_find_barang
   function REFRESH_DATA(){
     $('#tb_data').DataTable().destroy();
     var tb_data =  $("#tb_data").DataTable({
-        "order": [[ 0, "asc" ]],
+        "order": [[ 0, "desc" ]],
         "pageLength": 25,
         "autoWidth": false,
         "responsive": true,

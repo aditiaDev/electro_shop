@@ -34,6 +34,7 @@
 	</div><!-- /.sidebar-shortcuts -->
 
 	<ul class="nav nav-list">
+    
 		<li class="<?= ($this->uri->segment(1) == 'home') ? 'active open' : '' ?> hover">
 			<a href="<?php echo base_url("home")?>">
 				<i class="menu-icon fa fa-home"></i>
@@ -42,7 +43,9 @@
 
 			<b class="arrow"></b>
 		</li>
-
+    <?php
+      if($this->session->userdata('level') == "SUPER USER" || $this->session->userdata('level') == "KASIR"){
+    ?>
 		<li class="<?= ($this->uri->segment(1) == 'master') ? 'active open' : '' ?> hover">
 			<a href="#" class="dropdown-toggle">
 				<i class="menu-icon fa fa-desktop"></i>
@@ -89,7 +92,14 @@
 
 					<b class="arrow"></b>
 				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("master/point")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Setting Point Pelanggan
+					</a>
 
+					<b class="arrow"></b>
+				</li>
 				
 			</ul>
 		</li>
@@ -200,9 +210,87 @@
 
 					<b class="arrow"></b>
 				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("laporan/complaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Laporan Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+    <?php } ?>
+
+    <?php
+      if($this->session->userdata('level') == "PEMILIK"){
+    ?>
+    <li class="<?= ($this->uri->segment(1) == 'complaint') ? 'active open' : '' ?> hover">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-comments-o"></i>
+				<span class="menu-text">
+					Complaint
+				</span>
+
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+
+				<li class="hover">
+					<a href="<?php echo base_url("complaint/usercomplaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+
+        <li class="hover">
+					<a href="<?php echo base_url("complaint/grafikcomplaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Grafik Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
 			</ul>
 		</li>
 
+    <li class="<?= ($this->uri->segment(1) == 'laporan') ? 'active open' : '' ?> hover">
+			<a href="#" class="dropdown-toggle">
+				<i class="menu-icon fa fa-book"></i>
+				<span class="menu-text">
+					Laporan
+				</span>
 
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+
+			<b class="arrow"></b>
+
+			<ul class="submenu">
+
+				<li class="hover">
+					<a href="<?php echo base_url("laporan/penjualan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Laporan Penjualan
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+        <li class="hover">
+					<a href="<?php echo base_url("laporan/complaint")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Laporan Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+			</ul>
+		</li>
+    <?php } ?>
 	</ul><!-- /.nav-list -->
 </div>

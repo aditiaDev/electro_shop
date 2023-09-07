@@ -29,7 +29,7 @@
 				<div class="aside">
 					<h3 class="aside-title">Categories</h3>
 					<div class="checkbox-filter">
-					<button type="button" class="btn-danger block" onclick="actKategori('ALL')">ALL</button>
+					<button type="button" class="btn-danger block" onclick="actKategori('')">ALL</button>
 					<?php foreach($kategori as $kat){ ?>
 						<button type="button" onclick="actKategori('<?= $kat->id_kategori ?>')" class="btn-sm btn-danger block" style="padding: 5px 10px!important;"><?= $kat->nm_kategori ?></button>
 					<?php } ?>
@@ -41,9 +41,9 @@
 				<div class="aside">
 					<h3 class="aside-title">Brand</h3>
 					<div class="checkbox-filter">
-						<button type="button" class="btn-danger block" onclick="actMerk('ALL')">ALL</button>
+						<button type="button" class="btn-danger block" onclick="actMerk('')">ALL</button>
 						<?php foreach($merk as $brand){ ?>
-						<button type="button" class="btn-sm btn-danger block" style="padding: 5px 10px!important;"><?= $brand->merk ?></button>
+						<button type="button" class="btn-sm btn-danger block" onclick="actMerk('<?= $brand->merk ?>')" style="padding: 5px 10px!important;"><?= $brand->merk ?></button>
 						<?php } ?>
 					</div>
 				</div>
@@ -85,7 +85,9 @@
 		
 <script src="<?php echo base_url(); ?>assets/template/front/js/jquery.min.js"></script>
 <script>
-
+  var kategori=""
+  var merk=""
+  var barang=""
 	$('#pagination').on('click','a',function(e){
 		e.preventDefault(); 
 		var pageno = $(this).attr('data-ci-pagination-page');
@@ -97,6 +99,11 @@
 	function loadPagination(pagno){
 		$.ajax({
 			url: "<?php echo site_url('/front/loadRecord/') ?>"+pagno,
+      data: {
+        kategori,
+        merk,
+        barang
+      },
 			type: 'get',
 			dataType: 'json',
 			success: function(response){
@@ -177,6 +184,22 @@
         $("#jml_chart").text(data)
       }
     })
+  }
+
+  function actKategori(kat){
+    kategori = kat
+    loadPagination(0);
+  }
+
+  function actMerk(param_merk){
+    merk = param_merk
+    loadPagination(0);
+  }
+
+  function actSearch(){
+    event.preventDefault()
+    barang = $("[name='txtSearch']").val()
+    loadPagination(0);
   }
 
 	/* Fungsi formatRupiah */

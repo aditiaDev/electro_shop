@@ -127,6 +127,12 @@
                 </tbody>
               </table>
               <div class="order-col">
+                <div>Point Anda
+                  <input type="checkbox" id="chkPoint" onclick="cekGunakanPoint()" > Gunakan Point?
+                </div>
+                <div><input type="text" class="form-control" name="jml_point" onChange="changePoint()" value="0" readonly></div>
+              </div>
+              <div class="order-col">
                 <div><strong>TOTAL</strong></div>
                 <div><strong class="order-total" id="total_text"><?= rupiah($total,'Rp.') ?></strong></div>
               </div>
@@ -155,6 +161,36 @@
 <script src="<?php echo base_url(); ?>assets/template/front/js/jquery.min.js"></script>
 <script>
   // getKota()
+
+  var min_point
+  var max_point_pelanggan
+  setPoint()
+  getPointPelanggan()
+  function setPoint(){
+    $.ajax({
+      url: "<?php echo site_url('pelanggan/minPoint') ?>",
+      type: "POST",
+      dataType: "HTML",
+      success: function(data){
+        console.log(data)
+        min_point = data
+      }
+    })
+  }
+
+  function getPointPelanggan(){
+    $.ajax({
+      url: "<?php echo site_url('pelanggan/getPointPelanggan') ?>",
+      type: "POST",
+      dataType: "HTML",
+      success: function(data){
+        console.log(data)
+        max_point_pelanggan = data
+        // $("[name='jml_point']").val(max_point_pelanggan)
+      }
+    })
+  }
+
   getProvinsi()
 
   function deleteRow(id_barang){
@@ -287,13 +323,14 @@
     var tot=0; var subTotal=0;
     var jml_part = $("[name='qty[]']").length - 1;
     let harga = $("[name='harga_kirim']").val()
+    let jml_point = $("[name='jml_point']").val()
     for (var j = 0; j <= jml_part; j++) {
         subTotal = $(".subTotal").eq(j).text().split('.').join('');
         tot += parseFloat(subTotal);
 
     }
 
-    tot += parseFloat(harga);
+    tot = tot + parseFloat(harga) - parseFloat(jml_point);
 
     $("#total_text").text(formatRupiah(tot.toString(), ''));
 
@@ -327,6 +364,29 @@
       }
     })
   })
+
+  function cekGunakanPoint(){
+    if($("#chkPoint").is(":checked") == true){
+      // getPointPelanggan()
+      $("[name='jml_point']").val(max_point_pelanggan)
+      $("[name='jml_point']").attr('readonly', false)
+    }else{
+      $("[name='jml_point']").attr('readonly', true)
+      $("[name='jml_point']").val(0)
+    }
+
+    total()
+  }
+
+  function changePoint(){
+    let jml_point = $("[name='jml_point']").val()
+    if(parseFloat(jml_point) > parseFloat(max_point_pelanggan)){
+      alert("Point yg anda input melebihi jumlah point pelanggan")
+      $("[name='jml_point']").val(max_point_pelanggan)
+      
+    }
+    total()
+  }
 
   /* Fungsi formatRupiah */
   function formatRupiah(angka, prefix){

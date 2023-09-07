@@ -76,10 +76,10 @@ class Barang extends CI_Controller {
 
     $this->form_validation->set_rules('nm_barang', 'nm_barang', 'required|is_unique[tb_barang.nm_barang]');
     $this->form_validation->set_rules('id_kategori', 'id_kategori', 'required');
-    $this->form_validation->set_rules('harga', 'harga', 'required');
-    $this->form_validation->set_rules('berat_barang', 'berat_barang', 'required');
+    $this->form_validation->set_rules('harga', 'harga', 'required|numeric');
+    $this->form_validation->set_rules('berat_barang', 'berat_barang', 'required|numeric');
     $this->form_validation->set_rules('unit_pengukuran', 'unit_pengukuran', 'required');
-    $this->form_validation->set_rules('stock', 'stock', 'required');
+    $this->form_validation->set_rules('stock', 'stock', 'required|numeric');
     $this->form_validation->set_rules('merk', 'merk', 'required');
     $this->form_validation->set_rules('ket_barang', 'ket_barang', 'required');
 
@@ -120,10 +120,10 @@ class Barang extends CI_Controller {
     $this->load->library('form_validation');
     $this->form_validation->set_rules('nm_barang', 'nm_barang', 'required');
     $this->form_validation->set_rules('id_kategori', 'id_kategori', 'required');
-    $this->form_validation->set_rules('harga', 'harga', 'required');
-    $this->form_validation->set_rules('berat_barang', 'berat_barang', 'required');
+    $this->form_validation->set_rules('harga', 'harga', 'required|numeric');
+    $this->form_validation->set_rules('berat_barang', 'berat_barang', 'required|numeric');
     $this->form_validation->set_rules('unit_pengukuran', 'unit_pengukuran', 'required');
-    $this->form_validation->set_rules('stock', 'stock', 'required');
+    $this->form_validation->set_rules('stock', 'stock', 'required|numeric');
     $this->form_validation->set_rules('merk', 'merk', 'required');
     $this->form_validation->set_rules('ket_barang', 'ket_barang', 'required');
 

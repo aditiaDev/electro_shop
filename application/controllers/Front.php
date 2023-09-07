@@ -39,7 +39,11 @@ class Front extends CI_Controller {
         $allcount = $this->db->count_all('tb_barang');
  
         $this->db->limit($rowperpage, $rowno);
-        $users_record = $this->db->get('tb_barang')->result_array();
+        $users_record = $this->db->query("SELECT * FROM tb_barang 
+        WHERE id_kategori LIKE '%".$this->input->get('kategori')."%'
+        AND merk LIKE '%".$this->input->get('merk')."%'
+        AND nm_barang LIKE '%".$this->input->get('barang')."%'
+        ")->result_array();
   
         $config['base_url'] = base_url().'welcome/loadRecord';
         $config['use_page_numbers'] = TRUE;
@@ -177,7 +181,7 @@ class Front extends CI_Controller {
               "tgl_penjualan" => date('Y-m-d H:i:s'),
               "id_pelanggan" => $id_pelanggan,
               "tipe_penjualan" => 'ONLINE',
-              "diskon" => 0,
+              "point_pengurangan" => $this->input->post('jml_point'),
               "tot_biaya_barang" => 0,
               "tot_akhir" => 0,
               "status_penjualan" => "MENUNGGU PEMBAYARAN"
@@ -209,14 +213,13 @@ class Front extends CI_Controller {
         "id_barang" => $this->input->post('id_barang')[$key],
         "jumlah" => $this->input->post('qty')[$key],
         "harga" => $this->input->post('harga')[$key],
-        "diskon" => 0,
         "subtotal" => $subtotal,
       );
 
       $this->db->insert('tb_dtl_penjualan', $dataDtl);
     }
 
-    $total_akhir = $total_barang + $this->input->post('harga_kirim');
+    $total_akhir = $total_barang + $this->input->post('harga_kirim') - $this->input->post('jml_point');
 
     $this->db->query("UPDATE tb_penjualan 
     SET tot_biaya_barang = '".$total_barang."', tot_akhir = '".$total_akhir."'
@@ -225,6 +228,21 @@ class Front extends CI_Controller {
 
     $this->db->query("
     DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
+    ");
+
+    $this->db->query("
+      UPDATE tb_pelanggan SET jml_point = ( jml_point - ".$this->input->post('jml_point')." )
+      WHERE id_pelanggan = '".$id_pelanggan."'
+    ");
+
+    $potongan_point = $this->db->query("
+          SELECT MAX(potongan_point) potongan_point FROM tb_sys_point
+    ")->row()->potongan_point;
+
+    $calc_point = ($potongan_point/100) * $total_akhir;
+    $this->db->query("
+      UPDATE tb_pelanggan SET jml_point = ( jml_point + ".$calc_point." )
+      WHERE id_pelanggan = '".$id_pelanggan."'
     ");
 
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");

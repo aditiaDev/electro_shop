@@ -99,8 +99,8 @@
 						<div class="col-md-6">
 							<div class="header-search">
 								<form>
-									<input class="input" placeholder="Search here">
-									<button class="search-btn">Search</button>
+									<input class="input" name="txtSearch" placeholder="Search here">
+									<button class="search-btn" id="btnSearch" onclick="actSearch()">Search</button>
 								</form>
 							</div>
 						</div>

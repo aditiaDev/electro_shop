@@ -39,7 +39,6 @@
                     <th style="width: 270px;">Item</th>
                     <th style="width:80px;">Qty</th>
                     <th>Harga</th>
-                    <th style="width:80px;">Diskon<br>Value</th>
                     <th style="width:100px;">Sub Total</th>
                   </tr>
                 </thead>
@@ -65,8 +64,8 @@
                   </tr>
                   <tr>
                     <td></td>
-                    <td>Diskon (%)</td>
-                    <td><input type="number" name="diskon_header" onchange="diskon_calculate()" max="100" class="form-control" value="0"></td>
+                    <td>Point Pelanggan</td>
+                    <td><input type="number" name="jml_point" onchange="diskon_calculate()" readonly class="form-control" value="0"></td>
                   </tr>
                   <tr>
                     <td  style="width: 220px;font-size: 20px;font-weight: bold;">Order Value</td>
@@ -139,6 +138,7 @@
                       <thead>
                           <th>ID Pelanggan</th>
                           <th>Nama</th>
+                          <th>Jumlah Point</th>
                       </thead>
                       <tbody>
                           <tr>
@@ -165,7 +165,7 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">Pilih Pelanggan</h4>
+              <h4 class="modal-title">Masukkan No Penjualan</h4>
             </div>
             <div class="modal-body">
               <div class="row">
@@ -188,6 +188,20 @@
 
 <script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery-2.1.4.min.js"></script>
 <script>
+  var min_point
+  var max_point_pelanggan
+  setPoint()
+  function setPoint(){
+    $.ajax({
+      url: "<?php echo site_url('pelanggan/minPoint') ?>",
+      type: "POST",
+      dataType: "HTML",
+      success: function(data){
+        console.log(data)
+        min_point = data
+      }
+    })
+  }
 
   function actKategori(id_kategori){
     $.ajax({
@@ -237,7 +251,6 @@
                       '<td ><span class="i_barang"><input type="hidden" name="id_barang[]" value="'+array['id_barang']+'" >'+array['id_barang']+'</span><button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
                       '<td><input type="text" name="qty[]" id="qty_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control qty" value="1"></td>'+
                       '<td style="text-align:right;" id="harga_'+noRow+'" class="harga"><input type="hidden" name="harga[]" value="'+array['harga']+'" >'+formatRupiah(array['harga'], '')+'</td>'+
-                      '<td><input type="text" name="diskon[]" id="diskon_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control diskon" value="0"></td>'+
                       '<td style="text-align:right;" id="subTotal_'+noRow+'" class="subTotal">'+formatRupiah(array['harga'], '')+'</td>'+
                     '</tr>'
 
@@ -253,9 +266,9 @@
     // console.log(id)
     let qty = $("#qty_"+id).val().split('.').join('');
     let harga = $("#harga_"+id).text().split('.').join('');
-    let diskon = $("#diskon_"+id).val().split('.').join('');
+    
 
-    let subTotal = ( parseFloat(qty) * parseFloat(harga) ) - parseFloat(diskon)
+    let subTotal = ( parseFloat(qty) * parseFloat(harga) ) 
     $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
 
     total()
@@ -275,10 +288,17 @@
   }
 
   function diskon_calculate(){
+    
     let tot_barang = $("#total_text").text().split('.').join('');
-    let diskon = $("[name='diskon_header']").val()
+    let jml_point = $("[name='jml_point']").val()
 
-    let order_value = parseFloat(tot_barang) - (parseFloat(tot_barang) * parseFloat(diskon)/100)
+    if( jml_point > max_point_pelanggan ){
+      alert("Point yg anda input melebihi jumlah point pelanggan")
+      $("[name='jml_point']").val(max_point_pelanggan)
+      return
+    }
+
+    let order_value = parseFloat(tot_barang) - parseFloat(jml_point)
     $("#order_text").text(formatRupiah(order_value.toString(), ''));
   }
 
@@ -325,7 +345,7 @@
               "type": "POST",
           },
           "columns": [
-              { "data": "id_pelanggan" },{ "data": "nm_pelanggan" }
+              { "data": "id_pelanggan" },{ "data": "nm_pelanggan" },{ "data": "jml_point" }
           ]
       });
 
@@ -336,9 +356,21 @@
       let Rowdata = table_find_pelanggan.row( this ).data();
       let id_pelanggan = Rowdata.id_pelanggan;
       let nm_pelanggan = Rowdata.nm_pelanggan;
+      let jml_point = Rowdata.jml_point;
+
+      max_point_pelanggan = Rowdata.jml_point;
+
+      if(jml_point >= min_point){
+        $("[name='jml_point']").attr('readonly', false)
+      }else{
+        $("[name='jml_point']").attr('readonly', true)
+      }
 
       $("[name='id_pelanggan']").val(id_pelanggan);
       $("#nm_pelanggan").text(nm_pelanggan);
+      $("[name='jml_point']").val(jml_point);
+
+      diskon_calculate()
 
       $('#tb_select_pelanggan').DataTable().destroy();
       
@@ -394,9 +426,8 @@
 
   function afterSave(){
     $("[name='qty[]']").attr('disabled',true)
-    $("[name='diskon[]']").attr('disabled',true)
     $("#BTN_PELANGGAN").attr('disabled',true)
-    $("[name='diskon_header']").attr('disabled',true)
+    $("[name='jml_point']").attr('disabled',true)
     $("[name='bayar']").attr('disabled',true)
     $("#btnPay").attr('disabled',true)
   }

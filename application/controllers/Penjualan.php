@@ -125,12 +125,30 @@ class Penjualan extends CI_Controller {
               "tgl_penjualan" => date('Y-m-d H:i:s'),
               "id_pelanggan" => $this->input->post('id_pelanggan'),
               "tipe_penjualan" => 'ONSITE',
-              "diskon" => $this->input->post('diskon_header'),
+              "point_pengurangan" => $this->input->post('jml_point'),
               "tot_biaya_barang" => $this->input->post('tot_biaya_barang'),
               "tot_akhir" => $this->input->post('tot_akhir'),
               "status_penjualan" => "SELESAI"
             );
     $this->db->insert('tb_penjualan', $data);
+
+    if( $this->input->post('id_pelanggan') <> "GUEST" ){
+      $this->db->query("
+        UPDATE tb_pelanggan SET jml_point = ( jml_point - ".$this->input->post('jml_point')." )
+        WHERE id_pelanggan = '".$this->input->post('id_pelanggan')."'
+      ");
+
+      $potongan_point = $this->db->query("
+            SELECT MAX(potongan_point) potongan_point FROM tb_sys_point
+      ")->row()->potongan_point;
+
+      $calc_point = ($potongan_point/100) * $this->input->post('tot_akhir');
+      $this->db->query("
+        UPDATE tb_pelanggan SET jml_point = ( jml_point + ".$calc_point." )
+        WHERE id_pelanggan = '".$this->input->post('id_pelanggan')."'
+      ");
+    }
+    
 
     $subtotal = 0;
     foreach($this->input->post('id_barang') as $key => $each){
@@ -142,7 +160,6 @@ class Penjualan extends CI_Controller {
         "id_barang" => $this->input->post('id_barang')[$key],
         "jumlah" => $this->input->post('qty')[$key],
         "harga" => $this->input->post('harga')[$key],
-        "diskon" => $this->input->post('diskon')[$key],
         "subtotal" => $subtotal,
       );
 
@@ -166,6 +183,7 @@ class Penjualan extends CI_Controller {
         UPDATE tb_barang SET stock = ( stock - ".$this->input->post('qty')[$key]." ) 
         WHERE id_barang = '".$this->input->post('id_barang')[$key]."'
       ");
+      
     }
     
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id);
