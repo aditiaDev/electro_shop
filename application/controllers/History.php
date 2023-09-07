@@ -24,10 +24,11 @@ class History extends CI_Controller {
       "SELECT id_pelanggan FROM tb_pelanggan WHERE id_user='".$this->session->userdata('id_user')."'"
     )->row()->id_pelanggan;
 
-    $data['data'] = $this->db->query("
+    $rows = $this->db->query("
       SELECT 
       A.id_penjualan,
       DATE_FORMAT(A.tgl_penjualan, '%d %b %Y') as tgl_penjualan,
+      a.tipe_penjualan,
       B.id_barang,
       C.nm_barang,
       B.jumlah,
@@ -38,8 +39,75 @@ class History extends CI_Controller {
       LEFT JOIN tb_dtl_penjualan B ON A.id_penjualan = B.id_penjualan
       LEFT JOIN tb_barang C ON B.id_barang = C.id_barang
       WHERE A.id_pelanggan = '".$id_pelanggan."'
-    ")->result();
+    ")->result_array();
+    
+    $i=0;
+    foreach($rows as $row){
+      $data['data'][$i]['id_penjualan'] = $row['id_penjualan'];
+      $data['data'][$i]['tgl_penjualan'] = $row['tgl_penjualan'];
+      $data['data'][$i]['tipe_penjualan'] = $row['tipe_penjualan'];
+      $data['data'][$i]['id_barang'] = $row['id_barang'];
+
+      $data['data'][$i]['nm_barang'] = $row['nm_barang'];
+      $data['data'][$i]['jumlah'] = $row['jumlah'];
+      $data['data'][$i]['harga'] = $row['harga'];
+      $data['data'][$i]['subtotal'] = $row['subtotal'];
+      
+
+      $status = $row['status_penjualan'];
+      if($row['tipe_penjualan'] == "ONLINE" AND $row['status_penjualan'] == "MENUNGGU PEMBAYARAN"){
+        $retPenjualan = $this->cekPembayaranOnline($row['id_penjualan']);
+        // echo "</br>";
+        // print_r($retPenjualan);
+        if($retPenjualan->status_code != "404" and strtoupper(@$retPenjualan->transaction_status) == "SETTLEMENT"){
+          $status = "DISIAPKAN";
+          $this->db->query(
+            "UPDATE tb_penjualan SET status_penjualan = 'DISIAPKAN' WHERE id_penjualan = '".$row['id_penjualan']."'"
+          );
+        }else{
+          $status = $row['status_penjualan'];
+        }
+      }
+
+      $data['data'][$i]['status_penjualan'] = $status;
+      
+      $i++;
+    }
+
     echo json_encode($data);
+  }
+
+  public function cekPembayaranOnline($id){
+    $id_penjualan = $id;
+
+    $ch = curl_init(); 
+
+    // set url 
+    curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.midtrans.com/v2/".$id_penjualan."/status");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Accept: application/json',
+      'Authorization: Basic ' . base64_encode('SB-Mid-server-ij2O22aUOUuH5-RZB5Tyyynn' . ':')
+    )); 
+
+    // return the transfer as a string 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+    curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__) . "/cacert.pem"); 
+    // $output contains the output string 
+    $output = curl_exec($ch); 
+
+    // tutup curl 
+    curl_close($ch);      
+
+    // menampilkan hasil curl
+    $data = json_decode($output);
+    // echo "<pre>";
+    // print_r($data);
+    // echo "</pre>";
+
+    return $data;
   }
 
   private function _do_upload(){

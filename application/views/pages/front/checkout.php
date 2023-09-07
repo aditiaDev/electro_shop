@@ -346,66 +346,54 @@
   $("#btnCheckOut").click(function(){
     event.preventDefault();
 
+
+    formData = $("#FRM_DATA").serialize()
     $.ajax({
-      url: "<?php echo site_url('snap/token') ?>",
-      cache: false,
+      url: "<?php echo site_url('front/checkOutSave') ?>",
       type: "POST",
-      success: function(data) {
-        //location = data;
+      dataType: "JSON",
+      data: formData,
+      success: function(data){
+        console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
 
-        console.log('token = '+data);
-        
-        var resultType = document.getElementById('result-type');
-        var resultData = document.getElementById('result-data');
+          var resultType = document.getElementById('result-type');
+          var resultData = document.getElementById('result-data');
 
-        function changeResult(type,data){
-          $("#result-type").val(type);
-          $("#result-data").val(JSON.stringify(data));
-          //resultType.innerHTML = type;
-          //resultData.innerHTML = JSON.stringify(data);
-        }
-
-        snap.pay(data, {
-          
-          onSuccess: function(result){
-            changeResult('success', result);
-            console.log(result.status_message);
-            console.log(result);
-            $("#payment-form").submit();
-          },
-          onPending: function(result){
-            changeResult('pending', result);
-            console.log(result.status_message);
-            $("#payment-form").submit();
-          },
-          onError: function(result){
-            changeResult('error', result);
-            console.log(result.status_message);
-            $("#payment-form").submit();
+          function changeResult(type,data){
+            $("#result-type").val(type);
+            $("#result-data").val(JSON.stringify(data.token));
           }
-        });
-      }
-    });
 
-    // formData = $("#FRM_DATA").serialize()
-    // $.ajax({
-    //   url: "<?php echo site_url('front/checkOutSave') ?>",
-    //   type: "POST",
-    //   dataType: "JSON",
-    //   data: formData,
-    //   success: function(data){
-    //     // console.log(data)
-    //     if (data.status == "success") {
-    //       toastr.info(data.message)
-    //       setTimeout(() => {
-    //         window.location="<?php echo base_url('home');?>"
-    //       }, 500);
+          snap.pay(data.token, {
+            
+            onSuccess: function(result){
+              changeResult('success', result);
+              console.log(result.status_message);
+              console.log(result);
+              $("#payment-form").submit();
+            },
+            onPending: function(result){
+              changeResult('pending', result);
+              console.log(result.status_message);
+              $("#payment-form").submit();
+            },
+            onError: function(result){
+              changeResult('error', result);
+              console.log(result.status_message);
+              $("#payment-form").submit();
+            }
+          });
+          // setTimeout(() => {
+          //   window.location="<?php echo base_url('home');?>"
+          // }, 500);
           
-    //     }else{
-    //       toastr.error(data.message)
-    //     }
-    //   }
-    // })
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
   })
 
   function cekGunakanPoint(){

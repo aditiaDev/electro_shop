@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 class Penjualan extends CI_Controller {
 
     public function __construct(){
@@ -8,6 +9,11 @@ class Penjualan extends CI_Controller {
     
         // if(!$this->session->userdata('id_user'))
         //   redirect('login', 'refresh');
+
+        $params = array('server_key' => 'SB-Mid-server-ij2O22aUOUuH5-RZB5Tyyynn', 'production' => false);
+        $this->load->library('midtrans');
+        $this->midtrans->config($params);
+        $this->load->helper('url');
     }
 
 	public function index()
@@ -30,7 +36,7 @@ class Penjualan extends CI_Controller {
   }
 
   public function getAllData(){
-    $data['data'] = $this->db->query("
+    $rows = $this->db->query("
       SELECT A.id_penjualan, 
       DATE_FORMAT(A.tgl_penjualan, '%d %b %Y') as tgl_penjualan,
       A.tipe_penjualan,
@@ -44,8 +50,110 @@ class Penjualan extends CI_Controller {
       LEFT JOIN tb_barang C ON B.id_barang = C.id_barang
       LEFT JOIN tb_pelanggan D ON A.id_pelanggan = D.id_pelanggan
       ORDER BY A.tgl_penjualan DESC
-    ")->result();
+    ")->result_array();
+
+    $i=0;
+    foreach($rows as $row){
+      $data['data'][$i]['id_penjualan'] = $row['id_penjualan'];
+      $data['data'][$i]['tgl_penjualan'] = $row['tgl_penjualan'];
+      $data['data'][$i]['tipe_penjualan'] = $row['tipe_penjualan'];
+      $data['data'][$i]['id_barang'] = $row['id_barang'];
+
+      $data['data'][$i]['nm_barang'] = $row['nm_barang'];
+      $data['data'][$i]['jumlah'] = $row['jumlah'];
+      $data['data'][$i]['harga'] = $row['harga'];
+      $data['data'][$i]['SUB_TOTAL'] = $row['SUB_TOTAL'];
+      $data['data'][$i]['id_pelanggan'] = $row['id_pelanggan'];
+      $data['data'][$i]['nm_pelanggan'] = $row['nm_pelanggan'];
+      
+      $data['data'][$i]['bukti_bayar'] = $row['bukti_bayar'];
+
+      $status = $row['status_penjualan'];
+      if($row['tipe_penjualan'] == "ONLINE" AND $row['status_penjualan'] == "MENUNGGU PEMBAYARAN"){
+        $retPenjualan = $this->cekPembayaranOnline($row['id_penjualan']);
+
+        if($retPenjualan->status_code != "404" and strtoupper($retPenjualan->transaction_status) == "SETTLEMENT"){
+          $status = "DISIAPKAN";
+          $this->db->query(
+            "UPDATE tb_penjualan SET status_penjualan = 'DISIAPKAN' WHERE id_penjualan = '".$row['id_penjualan']."'"
+          );
+        }else{
+          $status = $row['status_penjualan'];
+        }
+      }
+
+      $data['data'][$i]['status_penjualan'] = $status;
+      
+      $i++;
+    }
+
     echo json_encode($data);
+  }
+
+  public function cekPembayaranOnline($id){
+    $id_penjualan = $id;
+
+    $ch = curl_init(); 
+
+    // set url 
+    curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.midtrans.com/v2/".$id_penjualan."/status");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Accept: application/json',
+      'Authorization: Basic ' . base64_encode('SB-Mid-server-ij2O22aUOUuH5-RZB5Tyyynn' . ':')
+    )); 
+
+    // return the transfer as a string 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+    curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__) . "/cacert.pem"); 
+    // $output contains the output string 
+    $output = curl_exec($ch); 
+
+    // tutup curl 
+    curl_close($ch);      
+
+    // menampilkan hasil curl
+    $data = json_decode($output);
+    // echo "<pre>";
+    // print_r($data);
+    // echo "</pre>";
+
+    return $data;
+  }
+
+  public function test(){
+    $id_penjualan = 'J2300018';
+
+    $ch = curl_init(); 
+
+    // set url 
+    curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.midtrans.com/v2/".$id_penjualan."/status");
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Accept: application/json',
+      'Authorization: Basic ' . base64_encode('SB-Mid-server-ij2O22aUOUuH5-RZB5Tyyynn' . ':')
+    )); 
+
+    // return the transfer as a string 
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+
+    curl_setopt($ch, CURLOPT_CAINFO, dirname(__FILE__) . "/cacert.pem"); 
+    // $output contains the output string 
+    $output = curl_exec($ch); 
+
+    // tutup curl 
+    curl_close($ch);      
+
+    // menampilkan hasil curl
+    $data = json_decode($output);
+    echo "<pre>";
+    print_r($data);
+    echo "</pre>";
+
+    // return $data;
   }
 
   public function changeStatus(){

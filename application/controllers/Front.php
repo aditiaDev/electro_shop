@@ -1,17 +1,23 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Methods: GET, OPTIONS");
 class Front extends CI_Controller {
 
-    public function __construct(){
-        parent::__construct();
-    
-        // if(!$this->session->userdata('id_user'))
-        //   redirect('login', 'refresh');
-        $this->load->helper('url');
-        $this->load->library('pagination');
-        $this->load->database();
-    }
+  public function __construct(){
+      parent::__construct();
+  
+      // if(!$this->session->userdata('id_user'))
+      //   redirect('login', 'refresh');
+
+      $params = array('server_key' => 'SB-Mid-server-ij2O22aUOUuH5-RZB5Tyyynn', 'production' => false);
+      $this->load->library('midtrans');
+      $this->midtrans->config($params);
+      
+      $this->load->helper('url');
+      $this->load->library('pagination');
+      $this->load->database();
+  }
 
 	public function index()
 	{
@@ -111,6 +117,8 @@ class Front extends CI_Controller {
       $jml_chart = $this->db->query("select count(*) as jml_chart from tb_temp_chart WHERE id_user='".$this->session->userdata('id_user')."'")->row()->jml_chart;
       echo $jml_chart;
     }
+
+  
 
   public function checkout(){
         $data['item_order'] = $this->db->query("
@@ -226,9 +234,9 @@ class Front extends CI_Controller {
     WHERE id_penjualan = '".$id."'
     ");
 
-    $this->db->query("
-    DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
-    ");
+    // $this->db->query("
+    // DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
+    // ");
 
     $this->db->query("
       UPDATE tb_pelanggan SET jml_point = ( jml_point - ".$this->input->post('jml_point')." )
@@ -245,9 +253,127 @@ class Front extends CI_Controller {
       WHERE id_pelanggan = '".$id_pelanggan."'
     ");
 
-    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
+    $token = $this->token($id);
+
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan", "token" => $token);
     echo json_encode($output);
 
+  }
+
+  public function token($id){
+    $id_penjualan = $id;
+    $tot_bayar = $this->db->query(
+      "SELECT tot_akhir FROM tb_penjualan WHERE id_penjualan = '".$id_penjualan."'"
+    )->row()->tot_akhir;
+
+    // //Required
+    $transaction_details = array(
+      'order_id' => $id_penjualan,
+      'gross_amount' => $tot_bayar, // no decimal allowed for creditcard
+    );
+
+    // Optional
+    // $item1_details = array(
+    //   'id' => $id_event,
+    //   'price' => $event[0]['biaya_pendaftaran'],
+    //   'quantity' => 1,
+    //   'name' => $event[0]['nm_event']
+    // );
+
+    // // Optional
+    // $item_details = array ($item1_details);
+
+    // // Optional
+    // $customer_details = array(
+    //   'first_name'    => "Yusuf",
+    //   'last_name'     => "Hayhay",
+    //   'email'         => "Yusuf@Hayhay.com",
+    //   'phone'         => "085632436786",
+    // );
+
+    // Data yang akan dikirim untuk request redirect_url.
+    $credit_card['secure'] = true;
+    //ser save_card true to enable oneclick or 2click
+    //$credit_card['save_card'] = true;
+
+    $time = time();
+    $custom_expiry = array(
+        'start_time' => date("Y-m-d H:i:s O",$time),
+        'unit' => 'hour', 
+        'duration'  => 24
+    );
+    
+    $transaction_data = array(
+        'transaction_details'=> $transaction_details,
+        // 'item_details'       => $item_details,
+        // 'customer_details'   => $customer_details,
+        'credit_card'        => $credit_card,
+        'expiry'             => $custom_expiry
+    );
+
+    error_log(json_encode($transaction_data));
+    $snapToken = $this->midtrans->getSnapToken($transaction_data);
+    error_log($snapToken);
+    return $snapToken;
+    
+  }
+
+  public function bayar(){
+    $id_penjualan = $this->input->post('id');
+    $tot_bayar = $this->db->query(
+      "SELECT tot_akhir FROM tb_penjualan WHERE id_penjualan = '".$id_penjualan."'"
+    )->row()->tot_akhir;
+
+    // //Required
+    $transaction_details = array(
+      'order_id' => $id_penjualan,
+      'gross_amount' => $tot_bayar, // no decimal allowed for creditcard
+    );
+
+    // Optional
+    // $item1_details = array(
+    //   'id' => $id_event,
+    //   'price' => $event[0]['biaya_pendaftaran'],
+    //   'quantity' => 1,
+    //   'name' => $event[0]['nm_event']
+    // );
+
+    // // Optional
+    // $item_details = array ($item1_details);
+
+    // // Optional
+    // $customer_details = array(
+    //   'first_name'    => "Yusuf",
+    //   'last_name'     => "Hayhay",
+    //   'email'         => "Yusuf@Hayhay.com",
+    //   'phone'         => "085632436786",
+    // );
+
+    // Data yang akan dikirim untuk request redirect_url.
+    $credit_card['secure'] = true;
+    //ser save_card true to enable oneclick or 2click
+    //$credit_card['save_card'] = true;
+
+    $time = time();
+    $custom_expiry = array(
+        'start_time' => date("Y-m-d H:i:s O",$time),
+        'unit' => 'hour', 
+        'duration'  => 24
+    );
+    
+    $transaction_data = array(
+        'transaction_details'=> $transaction_details,
+        // 'item_details'       => $item_details,
+        // 'customer_details'   => $customer_details,
+        'credit_card'        => $credit_card,
+        'expiry'             => $custom_expiry
+    );
+
+    error_log(json_encode($transaction_data));
+    $snapToken = $this->midtrans->getSnapToken($transaction_data);
+    error_log($snapToken);
+    echo $snapToken;
+    
   }
 
 }
