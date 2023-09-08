@@ -59,7 +59,7 @@ class History extends CI_Controller {
         $retPenjualan = $this->cekPembayaranOnline($row['id_penjualan']);
         // echo "</br>";
         // print_r($retPenjualan);
-        if($retPenjualan->status_code != "404" and strtoupper(@$retPenjualan->transaction_status) == "SETTLEMENT"){
+        if(@$retPenjualan->status_code != "404" and strtoupper(@$retPenjualan->transaction_status) == "SETTLEMENT"){
           $status = "DISIAPKAN";
           $this->db->query(
             "UPDATE tb_penjualan SET status_penjualan = 'DISIAPKAN' WHERE id_penjualan = '".$row['id_penjualan']."'"

@@ -72,10 +72,19 @@
                     <td colspan="2" style="color:red;text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 25px;" id="order_text">0</td>
                   </tr>
                   <tr>
+                    <td  style="width: 220px;font-size: 18px;font-weight: bold;">Pembayaran</td>
+                    <td colspan="2">
+                      <select name="tipe_bayar" id="tipe_bayar" class="form-control">
+                        <option value="TUNAI">Tunai</option>
+                        <option value="NON TUNAI">Non Tunai</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr class="tunai" >
                     <td  style="width: 220px;font-size: 18px;font-weight: bold;">Bayar</td>
                     <td colspan="2"><input type="text" name="bayar"  class="form-control"></td>
                   </tr>
-                  <tr>
+                  <tr class="tunai" >
                     <td  style="width: 220px;font-size: 18px;font-weight: bold;">Kembali</td>
                     <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 18px;" id="kembali_text">0</td>
                   </tr>
@@ -184,9 +193,15 @@
     </div>
   <!-- Modal Cetak -->
 
+  <form id="payment-form" method="post" action="<?=site_url()?>snap/finish">
+    <input type="hidden" name="result_type" id="result-type" value=""></div>
+    <input type="hidden" name="result_data" id="result-data" value=""></div>
+  </form>
+
 </div> 
 
 <script src="<?php echo base_url(); ?>assets/template/back/assets/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-C_hVzhEuRXcHPsa6"></script>
 <script>
   var min_point
   var max_point_pelanggan
@@ -262,6 +277,8 @@
     })
   }
 
+  
+
   function subTotal(id){
     // console.log(id)
     let qty = $("#qty_"+id).val().split('.').join('');
@@ -308,6 +325,12 @@
     let bayar = $(this).val().split('.').join('');
 
     let order_val = $("#order_text").text().split('.').join('');
+
+    if(bayar < order_val){
+      alert("Uang kurang")
+      $(this).val("")
+      return
+    }
 
     let kembali = parseFloat(bayar) - parseFloat(order_val)
     $("#kembali_text").text(formatRupiah(kembali.toString(), ''));
@@ -379,6 +402,15 @@
       
   });
 
+  $("#tipe_bayar").change(function(){
+    if($(".tunai").css('display') == "none"){
+      $(".tunai").css('display','')
+    }else{
+      $(".tunai").css('display','none')
+    }
+    
+  })
+
   $("#btnPay").click(function(){
     event.preventDefault()
 
@@ -387,7 +419,7 @@
       return
     }
 
-    if($("[name='bayar']").val() == ""){
+    if( $("#tipe_bayar").val() == "TUNAI" && $("[name='bayar']").val() == ""){
       alert("Input Uang Pembayaran")
       return
     }
@@ -413,9 +445,38 @@
         if (data.status == "success") {
           toastr.info(data.message)
           afterSave()
-          setTimeout(() => {
-            cetak(data.id)
-          }, 1000);
+          $("[name='no_nota']").val(data.id)
+
+          var resultType = document.getElementById('result-type');
+          var resultData = document.getElementById('result-data');
+
+          function changeResult(type,data){
+            $("#result-type").val(type);
+            $("#result-data").val(JSON.stringify(data.token));
+          }
+
+          snap.pay(data.token, {
+            
+            onSuccess: function(result){
+              changeResult('success', result);
+              console.log(result.status_message);
+              console.log(result);
+              $("#payment-form").submit();
+            },
+            onPending: function(result){
+              changeResult('pending', result);
+              console.log(result.status_message);
+              $("#payment-form").submit();
+            },
+            onError: function(result){
+              changeResult('error', result);
+              console.log(result.status_message);
+              $("#payment-form").submit();
+            }
+          });
+          // setTimeout(() => {
+          //   cetak(data.id)
+          // }, 1000);
           
         }else{
           toastr.error(data.message)

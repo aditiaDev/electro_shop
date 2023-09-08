@@ -72,7 +72,7 @@ class Penjualan extends CI_Controller {
       if($row['tipe_penjualan'] == "ONLINE" AND $row['status_penjualan'] == "MENUNGGU PEMBAYARAN"){
         $retPenjualan = $this->cekPembayaranOnline($row['id_penjualan']);
 
-        if($retPenjualan->status_code != "404" and strtoupper($retPenjualan->transaction_status) == "SETTLEMENT"){
+        if(@$retPenjualan->status_code != "404" and strtoupper(@$retPenjualan->transaction_status) == "SETTLEMENT"){
           $status = "DISIAPKAN";
           $this->db->query(
             "UPDATE tb_penjualan SET status_penjualan = 'DISIAPKAN' WHERE id_penjualan = '".$row['id_penjualan']."'"
@@ -226,6 +226,18 @@ class Penjualan extends CI_Controller {
       return false;
     }
 
+    foreach($this->input->post('id_barang') as $key => $each){
+      $stock = $this->db->query(
+        "SELECT stock FROM tb_barang WHERE id_barang = '".$this->input->post('id_barang')[$key]."'"
+      )->row()->stock;
+
+      if($stock < $this->input->post('qty')[$key]){
+        $output = array("status" => "error", "message" => "Stock untuk ".$this->input->post('id_barang')[$key]." hanya ".$stock);
+        echo json_encode($output);
+        return false;
+      }
+    }
+
     $id = $this->generateId();
     
     $data = array(
@@ -293,8 +305,52 @@ class Penjualan extends CI_Controller {
       ");
       
     }
+
+    if($this->input->post('tipe_bayar') == "NON TUNAI"){
+      $token = $this->token($id);
+    }
     
-    $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id);
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id,
+              "token" => $token);
     echo json_encode($output);
+  }
+
+  public function token($id){
+    $id_penjualan = $id;
+    $tot_bayar = $this->db->query(
+      "SELECT tot_akhir FROM tb_penjualan WHERE id_penjualan = '".$id_penjualan."'"
+    )->row()->tot_akhir;
+
+    // //Required
+    $transaction_details = array(
+      'order_id' => $id_penjualan,
+      'gross_amount' => $tot_bayar, // no decimal allowed for creditcard
+    );
+
+    // Data yang akan dikirim untuk request redirect_url.
+    $credit_card['secure'] = true;
+    //ser save_card true to enable oneclick or 2click
+    //$credit_card['save_card'] = true;
+
+    $time = time();
+    $custom_expiry = array(
+        'start_time' => date("Y-m-d H:i:s O",$time),
+        'unit' => 'hour', 
+        'duration'  => 24
+    );
+    
+    $transaction_data = array(
+        'transaction_details'=> $transaction_details,
+        // 'item_details'       => $item_details,
+        // 'customer_details'   => $customer_details,
+        'credit_card'        => $credit_card,
+        'expiry'             => $custom_expiry
+    );
+
+    error_log(json_encode($transaction_data));
+    $snapToken = $this->midtrans->getSnapToken($transaction_data);
+    error_log($snapToken);
+    return $snapToken;
+    
   }
 }
