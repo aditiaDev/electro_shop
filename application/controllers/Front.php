@@ -49,6 +49,7 @@ class Front extends CI_Controller {
         WHERE id_kategori LIKE '%".$this->input->get('kategori')."%'
         AND merk LIKE '%".$this->input->get('merk')."%'
         AND nm_barang LIKE '%".$this->input->get('barang')."%'
+        AND stock > 0
         ")->result_array();
   
         $config['base_url'] = base_url().'welcome/loadRecord';
@@ -123,7 +124,7 @@ class Front extends CI_Controller {
   public function checkout(){
         $data['item_order'] = $this->db->query("
         SELECT 
-        A.id_barang, A.qty, A.harga, B.nm_barang, (A.qty * A.harga) as sub_total
+        A.id_barang, A.qty, A.harga, B.stock, B.nm_barang, (A.qty * A.harga) as sub_total
         FROM tb_temp_chart A
         INNER JOIN tb_barang B ON A.id_barang = B.id_barang
         WHERE A.id_user='".$this->session->userdata('id_user')."'
@@ -157,6 +158,22 @@ class Front extends CI_Controller {
     $kode = $huruf . sprintf("%05s", $urutan);
     return $kode;
   }
+
+  public function generateIdBarangKeluar(){
+    $unik = 'K'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_barang_keluar) LAST_NO FROM tb_barang_keluar WHERE id_barang_keluar LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
 
   public function checkOutSave(){
     $this->load->library('form_validation');
@@ -225,6 +242,25 @@ class Front extends CI_Controller {
       );
 
       $this->db->insert('tb_dtl_penjualan', $dataDtl);
+
+      $id_barang_keluar = $this->generateIdBarangKeluar();
+
+      $dataDtl2 = array(
+        "id_barang_keluar" => $id_barang_keluar,
+        "doc_referensi" => $id,
+        "doc_tipe" => "PENJUALAN",
+        "tgl_barang_keluar" => date('Y-m-d H:i:s'),
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga" => $this->input->post('harga')[$key],
+      );
+
+      $this->db->insert('tb_barang_keluar', $dataDtl2);
+
+      $this->db->query("
+        UPDATE tb_barang SET stock = ( stock - ".$this->input->post('qty')[$key]." ) 
+        WHERE id_barang = '".$this->input->post('id_barang')[$key]."'
+      ");
     }
 
     $total_akhir = $total_barang + $this->input->post('harga_kirim') - $this->input->post('jml_point');
@@ -234,9 +270,9 @@ class Front extends CI_Controller {
     WHERE id_penjualan = '".$id."'
     ");
 
-    // $this->db->query("
-    // DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
-    // ");
+    $this->db->query("
+    DELETE FROM tb_temp_chart WHERE id_user = '".$id_user."'
+    ");
 
     $this->db->query("
       UPDATE tb_pelanggan SET jml_point = ( jml_point - ".$this->input->post('jml_point')." )

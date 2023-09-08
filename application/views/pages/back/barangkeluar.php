@@ -45,7 +45,7 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Jumlah</label>
-                        <input type="text" class="form-control" name="jumlah" onkeypress="return onlyNumberKey(event)" required>
+                        <input type="text" class="form-control" name="jumlah" onchange="cekStock()" onkeypress="return onlyNumberKey(event)" required>
                       </div>
                     </div>
                     <div class="col-sm-6">
@@ -56,6 +56,12 @@
                     </div>
                   </div>
                   <div class="row">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label>Stock</label>
+                        <input type="text" class="form-control" name="stock" readonly>
+                      </div>
+                    </div>
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label>Doc. Referensi</label>
@@ -201,9 +207,11 @@ var table_find_barang
         let id_barang = Rowdata.id_barang;
         let nm_barang = Rowdata.nm_barang;
         let harga = Rowdata.harga;
+        let stock = Rowdata.stock;
 
         $("[name='id_barang']").val(id_barang);
         $("[name='harga']").val(harga);
+        $("[name='stock']").val(stock);
 
         $('#tb_select_barang').DataTable().destroy();
         
@@ -309,5 +317,22 @@ var table_find_barang
       urlPost = "<?php echo site_url('barangkeluar/deleteData') ?>";
       formData = "id_barang_keluar="+id
       ACTION(urlPost, formData)
+    }
+
+    function cekStock(){
+      let jumlah = $("[name='jumlah']").val()
+      let stock = $("[name='stock']").val()
+
+      if($("[name='id_barang']").val() == ""){
+        alert("Input Barang")
+        $("[name='jumlah']").val("")
+        return
+      }
+
+      if(parseFloat(jumlah) > parseFloat(stock)){
+        alert("Jumlah barang melebihi stock")
+        $("[name='jumlah']").val(stock)
+        return
+      }
     }
 </script>

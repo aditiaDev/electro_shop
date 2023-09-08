@@ -34,10 +34,12 @@ class History extends CI_Controller {
       B.jumlah,
       B.harga,
       B.subtotal,
-      A.status_penjualan
+      A.status_penjualan,
+      CASE WHEN D.id_penilaian IS NOT NULL THEN 'SUDAH' ELSE 'BELUM' END PENILAIAN
       FROM tb_penjualan A
       LEFT JOIN tb_dtl_penjualan B ON A.id_penjualan = B.id_penjualan
       LEFT JOIN tb_barang C ON B.id_barang = C.id_barang
+      LEFT JOIN tb_penilaian D ON D.id_penjualan = A.id_penjualan
       WHERE A.id_pelanggan = '".$id_pelanggan."'
     ")->result_array();
     
@@ -52,6 +54,7 @@ class History extends CI_Controller {
       $data['data'][$i]['jumlah'] = $row['jumlah'];
       $data['data'][$i]['harga'] = $row['harga'];
       $data['data'][$i]['subtotal'] = $row['subtotal'];
+      $data['data'][$i]['PENILAIAN'] = $row['PENILAIAN'];
       
 
       $status = $row['status_penjualan'];
@@ -157,6 +160,50 @@ class History extends CI_Controller {
     $this->db->delete('tb_penjualan');
 
     $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
+    echo json_encode($output);
+  }
+  
+  public function generateId(){
+    $unik = 'N'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_penilaian) LAST_NO FROM tb_penilaian WHERE id_penilaian LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
+  public function penilaian(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('score', 'score', 'required');
+    $this->form_validation->set_rules('masukan', 'masukan', 'required');
+
+    
+    if($this->form_validation->run() == FALSE){
+      // echo validation_errors();
+      $output = array("status" => "error", "message" => validation_errors());
+      echo json_encode($output);
+      return false;
+    }
+
+    $id = $this->generateId();
+    
+    $data = array(
+              "id_penilaian" => $id,
+              "tgl_penilaian" => date('Y-m-d'),
+              "id_penjualan" => $this->input->post('id_penjualan'),
+              "nilai" => $this->input->post('score'),
+              "masukan" => $this->input->post('masukan'),
+              "id_user" => $this->session->userdata('id_user'),
+            );
+    $this->db->insert('tb_penilaian', $data);
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
     echo json_encode($output);
   }
 

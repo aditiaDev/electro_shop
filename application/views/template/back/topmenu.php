@@ -158,7 +158,7 @@
 			<a href="#" class="dropdown-toggle">
 				<i class="menu-icon fa fa-comments-o"></i>
 				<span class="menu-text">
-					Complaint
+					CRM
 				</span>
 
 				<b class="arrow fa fa-angle-down"></b>
@@ -172,6 +172,15 @@
 					<a href="<?php echo base_url("complaint/usercomplaint")?>">
 						<i class="menu-icon fa fa-caret-right"></i>
 						Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+
+        <li class="hover">
+					<a href="<?php echo base_url("complaint/kepuasan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Customer Feedback
 					</a>
 
 					<b class="arrow"></b>
@@ -229,7 +238,7 @@
 			<a href="#" class="dropdown-toggle">
 				<i class="menu-icon fa fa-comments-o"></i>
 				<span class="menu-text">
-					Complaint
+					CRM
 				</span>
 
 				<b class="arrow fa fa-angle-down"></b>
@@ -243,6 +252,15 @@
 					<a href="<?php echo base_url("complaint/usercomplaint")?>">
 						<i class="menu-icon fa fa-caret-right"></i>
 						Customer Complaint
+					</a>
+
+					<b class="arrow"></b>
+				</li>
+
+        <li class="hover">
+					<a href="<?php echo base_url("complaint/kepuasan")?>">
+						<i class="menu-icon fa fa-caret-right"></i>
+						Customer Feedback
 					</a>
 
 					<b class="arrow"></b>

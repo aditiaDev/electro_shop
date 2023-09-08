@@ -71,6 +71,7 @@ $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';
 $route['usercomplaintdtl/(:any)'] = 'usercomplaint/usercomplaintdtl/$1';
 
 $route['complaint/usercomplaint'] = 'usercomplaint';
+$route['complaint/kepuasan'] = 'kepuasan';
 $route['complaint/grafikcomplaint'] = 'usercomplaint/grafikComplaint';
 
 $route['laporan/penjualan'] = 'report/penjualan';

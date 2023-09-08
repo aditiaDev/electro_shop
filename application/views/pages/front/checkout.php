@@ -105,6 +105,7 @@
                   <tr>
                     <th style="width: 170px;">Item</th>
                     <th style="width:70px;">Qty</th>
+                    <th style="width:70px;">Stock</th>
                     <th>Harga</th>
                     <th style="width:100px;">Sub Total</th>
                   </tr>
@@ -117,6 +118,7 @@
                     <tr id="row_<?= $item->id_barang ?>">
                       <td><input type="hidden" name="id_barang[]" value="<?= $item->id_barang ?>" ><?= $item->nm_barang ?><button type="button" onClick="deleteRow('<?= $item->id_barang ?>')" class="bootbox-close-button close modClose" >×</button></td>
                       <td style="text-align:right;"><input type="text" name="qty[]" id="qty_<?= $item->id_barang ?>" onChange="subTotal('<?= $item->id_barang ?>')" class="input" value="<?= $item->qty ?>"></td>
+                      <td style="text-align:right;" ><input type="hidden" id="stock_<?= $item->id_barang ?>" name="stock[]" value="<?= $item->stock?>"><?= $item->stock ?></td>
                       <td style="text-align:right;" id="harga_<?= $item->id_barang ?>"><input type="hidden" name="harga[]" value="<?= $item->harga?>"><?= rupiah($item->harga,'') ?></td>
                       <td style="text-align:right;" class="subTotal" id="subTotal_<?= $item->id_barang ?>"><?= rupiah($item->sub_total,'') ?></td>
                     </tr>
@@ -319,6 +321,14 @@
     // console.log(id)
     let qty = $("#qty_"+id).val().split('.').join('');
     let harga = $("#harga_"+id).text().split('.').join('');
+
+    let stock = $("#stock_"+id).val().split('.').join('');
+
+    if(parseFloat(qty) > parseFloat(stock)){
+      alert("Stock tidak cukup")
+      $("#qty_"+id).val(stock).trigger('change')
+      return
+    }
 
     let subTotal = ( parseFloat(qty) * parseFloat(harga) )
     $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))

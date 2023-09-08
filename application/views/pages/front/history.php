@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url('/assets/raty/jquery.raty.css'); ?>">
 <!-- BREADCRUMB -->
 <div id="breadcrumb" class="section">
 	<!-- container -->
@@ -57,6 +58,7 @@
               <th>Total</th>
               <th>Status Pesanan</th>
               <th>Action</th>
+              <th>Nilai</th>
             </tr>
           </thead>
           <tbody>
@@ -98,6 +100,39 @@
     </div>
   </div><!-- End Basic Modal-->
 
+  <div class="modal fade" id="modal_nilai" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="FRM_NILAI" method="post" >
+        <div class="modal-header">
+          <button type="button" class="bootbox-close-button close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">Berikan Penilaian</h4>
+        </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Nilai</label>
+                  <div class="demo"></div>
+
+                </div>
+                <div class="form-group">
+                  <label>Masukan</label>
+                  <textarea name="masukan" ows="3" class="form-control"></textarea>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary">Batal</button>
+            <button type="button" class="btn btn-primary" id="BTN_SAVE_NILAI">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   
   
 </div>
@@ -108,6 +143,7 @@
 </form>
 		
 <script src="<?php echo base_url(); ?>assets/template/front/js/jquery.min.js"></script>
+<script src="<?php echo base_url('/assets/raty/jquery.raty.js'); ?>"></script>
 <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-C_hVzhEuRXcHPsa6"></script>
 <script>
   var id_data
@@ -117,7 +153,14 @@
     
     REFRESH_DATA()
     $(".dataTables_filter, .dataTables_paginate").css("text-align", "right")
+
+    
+
   })
+
+  $('.demo').raty({
+
+});
 
   function REFRESH_DATA(){
     $('#tb_data').DataTable().destroy();
@@ -165,6 +208,15 @@
                   return ""
                 }
                 
+              },
+            },
+            { "data": null, 
+              "render" : function(data){
+                if(data.PENILAIAN != "SUDAH"){
+                  return "<button class='btn btn-sm btn-warning' title='Nilai' onclick='nilai(\""+data.id_penjualan+"\");'>Nilai </button> "
+                }else{
+                  return ""
+                }
               },
             },
         ]
@@ -248,6 +300,11 @@
     $("#modal_add").modal('show')
   }
 
+  function nilai(id_penjualan){
+    id_data = id_penjualan
+    $("#modal_nilai").modal('show')
+  }
+
   $("#btnModalbatal").click(function(){
     $("#modal_add").modal('hide')
   })
@@ -314,6 +371,7 @@
         if (data.status == "success") {
           toastr.info(data.message)
           REFRESH_DATA()
+          
 
         }else{
           toastr.error(data.message)
@@ -321,4 +379,32 @@
       }
     })
   }
+
+  $("#BTN_SAVE_NILAI").click(function(){
+    event.preventDefault();
+    let formData = $("#FRM_NILAI").serialize();
+    formData+="&id_penjualan="+id_data
+    $.ajax({
+      url: "<?php echo site_url('history/penilaian') ?>",
+      type: "POST",
+      data: formData,
+      dataType: "JSON",
+      beforeSend: function(){
+        $("#LOADER").show();
+      },
+      complete: function(){
+        $("#LOADER").hide();
+      },
+      success: function(data){
+        if (data.status == "success") {
+          toastr.info(data.message)
+          REFRESH_DATA()
+          $("#modal_nilai").modal('hide')
+
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
 </script>
